@@ -35,9 +35,8 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
-- **Histórico para quem chega depois:** o texto que vem do LoRa passa a ser guardado mesmo sem
-  telefone conectado: as últimas 12 mensagens, por até seis horas, só na memória do aparelho. O
-  telefone que chega recebe o que falta, pelo mecanismo próprio do Bitchat ("ouvido aqui antes").
-  Não foi ensaiado com o aplicativo real.
-- Das versões anteriores: `!ponte guia` (ou `!bridge guide`) explica a ponte em quatro mensagens
-  curtas, no próprio aparelho, no aplicativo MeshCore ou no `#mesh` do Bitchat.
+- **`!ponte quem`** (ou `!bridge who`): lista os nomes ouvidos no canal LoRa nas últimas seis horas,
+  no próprio aparelho, no aplicativo MeshCore ou no `#mesh` do Bitchat.
+- Das versões anteriores: histórico para quem chega depois (o texto do LoRa fica guardado, até 12
+  mensagens por seis horas, e é entregue ao telefone que chega) e `!ponte guia`, que explica a
+  ponte em quatro mensagens curtas.
