@@ -26,8 +26,11 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
   62,5 kHz, SF 8, CR 4/8, _path hash_ de 2 bytes). Um aparelho com ajustes já salvos mantém os
   dele; confira antes de transmitir.
 - O aplicativo _BT Foxhunt_ não faz parte destas versões.
-- Com o Bluetooth ligado o aparelho não repousa, e a bateria dura menos. Sem telefone Bitchat por
-  três minutos, a ponte passa a um modo econômico de anúncio.
+- Com o Bluetooth ligado o aparelho não repousa, e a bateria dura menos.
+- **O modo econômico da ponte passou a ser opcional e vem desligado** (`!bridge economy on` liga,
+  `!bridge economy off` desliga; a escolha fica gravada). Na versão anterior ele era automático.
+  Ligado, sem telefone Bitchat por três minutos a ponte anuncia-se mais devagar, e tanto o Bitchat
+  quanto o aplicativo MeshCore podem demorar mais para encontrar o aparelho.
 - Um telefone já pareado com o Saitama original precisa parear de novo.
 
 Guia completo: [docs/BITCHAT.md](https://github.com/EduChacon/Saitama-mesh---BC-/blob/main/docs/BITCHAT.md).

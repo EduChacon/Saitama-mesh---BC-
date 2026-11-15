@@ -63,6 +63,8 @@ Saitama original precisa esquecer o aparelho e parear de novo.
 - `!bridge local`: só Bluetooth, sem LoRa. `!bridge lora`: volta a usar o canal.
 - `!bridge link off`, `!bridge link on`: desliga e liga a passagem do texto vindo de pontes
   Meshtastic.
+- `!bridge economy on`, `!bridge economy off`: liga e desliga o modo econômico da ponte, que vem
+  desligado; a escolha fica gravada.
 
 ## O que muda em relação ao Saitama original
 
@@ -74,10 +76,11 @@ b) **O aplicativo _BT Foxhunt_ fica fora** destas versões: ele foi escrito para
 
 c) **Sem repouso do processador enquanto o Bluetooth estiver ligado.** A ponte atende os telefones
 com a tela apagada, e as conexões não sobreviveriam ao repouso. A bateria dura menos; com o
-Bluetooth desligado o aparelho repousa como antes. Depois de três minutos sem nenhum telefone
-Bitchat, a ponte entra em modo econômico (anúncio Bluetooth cerca de uma vez por segundo), o que
-reduz o gasto em espera, sem devolver o repouso. Quando a ponte não estiver em uso, `!bridge off`
-ou desligar o Bluetooth nos ajustes poupa mais.
+Bluetooth desligado o aparelho repousa como antes. O modo econômico, opcional e desligado de
+fábrica (`!bridge economy on`), faz a ponte anunciar-se cerca de uma vez por segundo depois de três
+minutos sem nenhum telefone Bitchat; isso reduz o gasto em espera, sem devolver o repouso, e nesse
+ritmo tanto o Bitchat quanto o aplicativo MeshCore podem demorar mais para encontrar o aparelho.
+Quando a ponte não estiver em uso, `!bridge off` ou desligar o Bluetooth nos ajustes poupa mais.
 
 d) **O MeshCore embutido** (`lib/MeshCore`) aponta para `EduChacon/Meshcore-Bitchat`, que é o
 MeshCore 1.18.0 com os arquivos da ponte. As fontes do MeshCore em si são as mesmas.
