@@ -35,7 +35,9 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
-- **Guia dentro da ponte:** `!ponte guia` (ou `!bridge guide`, em inglês) explica a ponte em quatro
-  mensagens curtas, no próprio aparelho, no aplicativo MeshCore ou no `#mesh` do Bitchat.
-
-Guia completo: [docs/BITCHAT.md](https://github.com/EduChacon/Saitama-mesh---BC-/blob/main/docs/BITCHAT.md).
+- **Histórico para quem chega depois:** o texto que vem do LoRa passa a ser guardado mesmo sem
+  telefone conectado: as últimas 12 mensagens, por até seis horas, só na memória do aparelho. O
+  telefone que chega recebe o que falta, pelo mecanismo próprio do Bitchat ("ouvido aqui antes").
+  Não foi ensaiado com o aplicativo real.
+- Das versões anteriores: `!ponte guia` (ou `!bridge guide`) explica a ponte em quatro mensagens
+  curtas, no próprio aparelho, no aplicativo MeshCore ou no `#mesh` do Bitchat.
