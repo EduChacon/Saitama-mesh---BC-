@@ -65,6 +65,9 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   Meshtastic.
 - `!bridge economy on`, `!bridge economy off`: liga e desliga o modo econômico da ponte, que vem
   desligado; a escolha fica gravada.
+- `!ponte guia` (ou `!bridge guide`, em inglês): explica a ponte em quatro mensagens curtas. Vale
+  também no `#mesh` do Bitchat, para quem só usa o Bitchat; ali sai no máximo uma vez a cada 30
+  segundos.
 
 ## O que muda em relação ao Saitama original
 

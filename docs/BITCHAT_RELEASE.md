@@ -33,4 +33,9 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
   quanto o aplicativo MeshCore podem demorar mais para encontrar o aparelho.
 - Um telefone já pareado com o Saitama original precisa parear de novo.
 
+## Novidade desta versão
+
+- **Guia dentro da ponte:** `!ponte guia` (ou `!bridge guide`, em inglês) explica a ponte em quatro
+  mensagens curtas, no próprio aparelho, no aplicativo MeshCore ou no `#mesh` do Bitchat.
+
 Guia completo: [docs/BITCHAT.md](https://github.com/EduChacon/Saitama-mesh---BC-/blob/main/docs/BITCHAT.md).
