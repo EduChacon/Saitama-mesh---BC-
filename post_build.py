@@ -22,11 +22,14 @@ _DEVICE_NAMES = {
     "t-deck":          "t-deck-plus",
     "t-deck-launcher": "t-deck-plus",
     "cardputer-adv":   "cardputer-adv",
+    "t-deck-bitchat":        "t-deck-plus-bitchat",
+    "cardputer-adv-bitchat": "cardputer-adv-bitchat",
 }
 
 # Flash size for the merged image; boards not listed are 16 MB.
 _FLASH_SIZES = {
     "cardputer-adv": "8MB",
+    "cardputer-adv-bitchat": "8MB",
 }
 
 def _git(args, cwd):

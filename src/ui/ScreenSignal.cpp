@@ -79,6 +79,9 @@ lv_obj_t* ScreenSignal::s_airtimeRxLbl = nullptr;
 lv_obj_t* ScreenSignal::s_freqLbl      = nullptr;
 lv_obj_t* ScreenSignal::s_profileLbl  = nullptr;
 lv_obj_t* ScreenSignal::s_heapLbl      = nullptr;
+#if OPS_FEAT_BITCHAT
+static lv_obj_t* s_bitchatLbl = nullptr;   // bridge state, refreshed with the other live rows
+#endif
 lv_obj_t* ScreenSignal::s_psramLbl    = nullptr;
 lv_obj_t* ScreenSignal::s_battLbl     = nullptr;
 lv_obj_t* ScreenSignal::s_rxGainLbl   = nullptr;
@@ -277,7 +280,10 @@ void ScreenSignal::_build()
     // ── HARDWARE (partly live: heap/PSRAM) ───────────────────────────
     _addSection(_body, "HARDWARE");
     _addRow(_body, "Board:", OPS_BOARD_NAME);
-    _addRow(_body, "FW:", OPS_VERSION_STRING);
+    _addRow(_body, "FW:", OPS_VERSION_STRING OPS_VERSION_SUFFIX);
+#if OPS_FEAT_BITCHAT
+    _addRow(_body, "Bitchat:", "--", &s_bitchatLbl);
+#endif
     _addRow(_body, "CPU:", "ESP32-S3  240 MHz");
     _addRow(_body, "Heap:",  "--",  &s_heapLbl);
     _addRow(_body, "PSRAM:", "--",  &s_psramLbl);
@@ -430,6 +436,9 @@ void ScreenSignal::_refresh()
     else
         snprintf(buf, sizeof(buf), "%u B free", (unsigned)heap);
     lv_label_set_text(s_heapLbl, buf);
+#if OPS_FEAT_BITCHAT
+    if (s_bitchatLbl) lv_label_set_text(s_bitchatLbl, ops::MeshService::instance().bitchatStatus());
+#endif
 
     if (psram > 1024 * 1024)
         snprintf(buf, sizeof(buf), "%.1f MB free", (double)psram / (1024.0 * 1024.0));

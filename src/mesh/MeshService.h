@@ -378,6 +378,8 @@ public:
     bool isBLERunning() const;
     // True if a mobile app is currently connected via BLE.
     bool isBLEConnected() const;
+    // One line on the Bitchat bridge ("" in builds without it).
+    const char* bitchatStatus() const;
 
     bool initialized() const { return _initialized; }
     // True when the SX1262 BUSY pin (GPIO13) is HIGH — TX or command in progress.

@@ -7,9 +7,14 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
+#include "../features.h"
 #include <helpers/BaseSerialInterface.h>
+#if OPS_FEAT_BITCHAT
+#include <helpers/bitchat/esp32/SerialBLEInterface.h>   // NimBLE, shared with the Bitchat bridge
+#else
 #include <helpers/esp32/SerialBLEInterface.h>
 #include <esp_bt_defs.h>
+#endif
 
 namespace ops {
 
@@ -43,7 +48,9 @@ private:
     bool _running    = false;
     bool _bleInited  = false;
     bool _pendingEnc = false;
+#if !OPS_FEAT_BITCHAT
     esp_bd_addr_t _pendingBda = {};
+#endif
 };
 
 }  // namespace ops

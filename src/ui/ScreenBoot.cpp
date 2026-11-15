@@ -36,7 +36,7 @@ void ScreenBoot::show() {
 
     // ── Version ────────────────────────────────────────────────────────
     lv_obj_t* ver = lv_label_create(_screen);
-    lv_label_set_text(ver, "v" OPS_VERSION_STRING);
+    lv_label_set_text(ver, "v" OPS_VERSION_STRING OPS_VERSION_SUFFIX);
     lv_obj_set_style_text_color(ver, theme::TEXT_MUTED, 0);
     lv_obj_set_style_text_font(ver, &lv_font_montserrat_10, 0);
     lv_obj_align(ver, LV_ALIGN_CENTER, 0, 4);

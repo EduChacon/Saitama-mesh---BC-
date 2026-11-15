@@ -5,6 +5,72 @@
 #include "../utils/Log.h"
 #include "../utils/BtPin.h"
 #include <cstring>
+
+#if OPS_FEAT_BITCHAT
+
+// NimBLE build: the interface pairs, encrypts and advertises by itself, so this
+// service only starts it, stops it and manages the PIN and the pairings.
+namespace ops {
+
+BTCompanionService& BTCompanionService::instance()
+{
+    static BTCompanionService s;
+    return s;
+}
+
+void BTCompanionService::scheduleMitmEncrypt(const uint8_t* /*remoteBda*/) {}
+
+void BTCompanionService::init(const char* deviceName, uint32_t pinCode)
+{
+    if (!_bleInited) {
+        char name[32];
+        strncpy(name, deviceName ? deviceName : "OPS-NODE", sizeof(name) - 1);
+        name[sizeof(name) - 1] = '\0';
+        _ble.begin("", name, pinCode);
+        _bleInited = true;
+        OPS_LOG("BT", "BLE stack (NimBLE) init as '%s'", name);
+        if (btpin::takeBondClear()) _clearBonds();
+    }
+    // Advertising starts when MeshService enables the interface.
+    _running = true;
+}
+
+void BTCompanionService::_clearBonds()
+{
+    int n = NimBLEDevice::getNumBonds();
+    if (n <= 0) return;
+    NimBLEDevice::deleteAllBonds();
+    OPS_LOG("BT", "Removed %d pairing(s) - pair again with the new PIN", n);
+}
+
+void BTCompanionService::applyPin(uint32_t pinCode)
+{
+    if (!_bleInited) return;   // init() reads the PIN (and clears bonds) later
+    _ble.setPin(pinCode);
+    btpin::takeBondClear();
+    _clearBonds();
+}
+
+void BTCompanionService::stop()
+{
+    if (!_bleInited) return;
+    _ble.disable();   // stops advertising and drops the links; safe to enable again on this stack
+    _pendingEnc = false;
+    _running    = false;
+    OPS_LOG("BT", "BLE stopped");
+}
+
+void BTCompanionService::tick() {}
+
+bool BTCompanionService::isConnected() const
+{
+    return _running && _ble.isConnected();
+}
+
+}  // namespace ops
+
+#else  // !OPS_FEAT_BITCHAT
+
 #include <BLEDevice.h>
 #include <esp_gap_ble_api.h>
 #include <esp_gatts_api.h>
@@ -101,3 +167,5 @@ bool BTCompanionService::isConnected() const
 }
 
 }  // namespace ops
+
+#endif  // OPS_FEAT_BITCHAT

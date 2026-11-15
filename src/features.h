@@ -123,3 +123,14 @@
 #define OPS_AVATAR_SZ    44
 
 #endif
+
+// Bitchat bridge (the *-bitchat environments): Bluetooth runs on the NimBLE
+// stack, shared by the MeshCore app's link and the Bitchat service. The BT
+// foxhunt app is written for the other stack and is left out of those builds.
+#ifdef WITH_BITCHAT_BRIDGE
+#define OPS_FEAT_BITCHAT 1
+#undef  OPS_FEAT_FOXHUNT
+#define OPS_FEAT_FOXHUNT 0
+#else
+#define OPS_FEAT_BITCHAT 0
+#endif

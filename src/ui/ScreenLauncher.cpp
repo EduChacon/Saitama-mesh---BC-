@@ -1692,7 +1692,11 @@ void ScreenLauncher::_onIconClick(lv_event_t* e) {
     else if (strcmp(name, "2048")      == 0) { Screen2048::show();       return; }
     else if (strcmp(name, "Snake")     == 0) { ScreenSnake::show();      return; }
     else if (strcmp(name, "PCAP")      == 0) { ScreenPcap::show();       return; }
+#if OPS_FEAT_FOXHUNT
     else if (strcmp(name, "BT Foxhunt") == 0) { ScreenFoxhunt::show();   return; }
+#else
+    else if (strcmp(name, "BT Foxhunt") == 0) { return; }   // not in this build (Bitchat bridge)
+#endif
     else if (strcmp(name, "Pic Viewer") == 0) { ScreenPicViewer::show(); return; }
     else if (strcmp(name, "Regions")   == 0) { ScreenRegions::show();   return; }
     ScreenPlaceholder::show(name);

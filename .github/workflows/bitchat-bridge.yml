@@ -1,0 +1,101 @@
+name: Bitchat bridge
+
+# Builds the two environments that carry the Bitchat bridge. On main, a release is published when
+# the head commit message contains [publish-release]. The stock builds stay in platformio.yaml.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+
+concurrency:
+  group: bitchat-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - env: t-deck-bitchat
+            device: t-deck-plus-bitchat
+            flash: 16MB
+          - env: cardputer-adv-bitchat
+            device: cardputer-adv-bitchat
+            flash: 8MB
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio esptool
+
+      - name: Build
+        run: |
+          set -o pipefail
+          pio run -e "${{ matrix.env }}" 2>&1 | tee build.log | tail -30
+
+      - name: Summary
+        if: always()
+        run: |
+          grep -E "^RAM:|^Flash:" build.log | head -2 | while IFS= read -r line; do echo "::notice title=${{ matrix.env }}::$line"; done
+          grep -E "error:|Error [0-9]|undefined reference" build.log | head -8 | while IFS= read -r line; do echo "::error title=${{ matrix.env }}::$line"; done
+
+      - name: Collect firmware
+        run: |
+          version=$(python3 -c "import re; print(re.search(r'OPS_VERSION_STRING\s+\"([^\"]+)\"', open('src/version.h').read()).group(1))")
+          out=".pio/build/${{ matrix.env }}"
+          stem="published/saitama-${{ matrix.device }}-${version}"
+          mkdir -p published
+          cp "$out/firmware.bin" "${stem}.bin"
+          python -m esptool --chip esp32s3 merge_bin \
+            --flash_mode dio --flash_freq 80m --flash_size ${{ matrix.flash }} \
+            0x0000 "$out/bootloader.bin" 0x8000 "$out/partitions.bin" 0x10000 "$out/firmware.bin" \
+            -o "${stem}-merged.bin"
+          ls -l published
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bitchat-${{ matrix.device }}
+          path: published/
+
+  release:
+    needs: build
+    if: >-
+      github.event_name == 'push' && github.ref_name == 'main' &&
+      contains(github.event.head_commit.message, '[publish-release]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bitchat-*
+          path: published
+          merge-multiple: true
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(python3 -c "import re; print(re.search(r'OPS_VERSION_STRING\s+\"([^\"]+)\"', open('src/version.h').read()).group(1))")
+          bridge=$(python3 -c "import re; print(re.search(r'\+Bitchat (\d+)', open('src/version.h').read()).group(1))")
+          tag="bitchat-${version}-${bridge}"
+          (cd published && sha256sum * > SHA256SUMS)
+          gh release create "$tag" published/* --target "$GITHUB_SHA" --prerelease \
+            --title "Saitama ${version} + Bitchat ${bridge}" --notes-file docs/BITCHAT_RELEASE.md

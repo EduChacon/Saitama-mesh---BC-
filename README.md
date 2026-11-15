@@ -1,5 +1,11 @@
 # Saitama
 
+> **This fork adds a Bitchat bridge.** Builds `t-deck-bitchat` and `cardputer-adv-bitchat` carry
+> the bridge of [EduChacon/Meshcore-Bitchat](https://github.com/EduChacon/Meshcore-Bitchat): public
+> text of the Bitchat app's `#mesh` goes to the MeshCore channel `#bitchat` and back. They compile
+> and have not been run on a device yet. Guide (Portuguese): [docs/BITCHAT.md](docs/BITCHAT.md).
+> Everything else below is upstream [Saitama](https://github.com/868meshbot/Saitama).
+
 [![License: GPL v3+](https://img.shields.io/badge/License-GPL%20v3%2B-blue.svg)](LICENSE)
 [![Latest Release](https://img.shields.io/github/v/release/868meshbot/Saitama)](https://github.com/868meshbot/Saitama/releases/latest)
 [![Release Date](https://img.shields.io/github/release-date/868meshbot/Saitama)](https://github.com/868meshbot/Saitama/releases)

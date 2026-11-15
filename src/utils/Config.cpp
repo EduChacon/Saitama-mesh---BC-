@@ -33,7 +33,8 @@ static void setDefaults(Config& c) {
         c.channels[i].scope[0]     = '\0';
     }
     c.activeChannel    = 0;
-    c.bluetoothEnabled  = false;
+    // The Bitchat bridge works over Bluetooth, so its builds start with it on.
+    c.bluetoothEnabled  = OPS_FEAT_BITCHAT ? true : false;
     c.speakerEnabled    = true;
     c.gpsMode           = 2;  // on by default
     c.kbBrightness    = 128;

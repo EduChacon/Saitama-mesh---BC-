@@ -36,6 +36,9 @@
 #include "../utils/Crypto.h"
 #include "../utils/AutoAdvert.h"
 #include <helpers/BaseChatMesh.h>
+#if OPS_FEAT_BITCHAT
+#include <helpers/bitchat/BitchatBridge.h>
+#endif
 #include <helpers/TransportKeyStore.h>
 #include <SHA256.h>
 #include <helpers/ESP32Board.h>
@@ -225,7 +228,11 @@ static constexpr uint32_t DC_SLP_US = 250000;  // 250 ms sleep
 static constexpr uint32_t DC_ARM_MS = 10000;   // arm after 10 s idle (less aggressive)
 
 // ── OMSMesh ────────────────────────────────────────────────────────
-class OMSMesh : public BaseChatMesh {
+class OMSMesh : public BaseChatMesh
+#if OPS_FEAT_BITCHAT
+    , public bitchat::MeshHost
+#endif
+{
     static constexpr int RX_QUEUE_SIZE = 24;
     static constexpr int MAX_PEERS     = 60;
 
@@ -877,6 +884,12 @@ class OMSMesh : public BaseChatMesh {
             const char* text = (const char*)&_cmdFrame[i];
             int tlen = (int)len - i;
             ChannelDetails ch;
+#if OPS_FEAT_BITCHAT
+            int slot = getChannel(ch_idx, ch) ? _slotOf(ch.channel) : -1;
+            if (slot >= 0 && bitchat_bridge.onAppText((uint8_t)slot, text, tlen)) {
+                _compWriteOK();   // a bridge command: answered in the app, never transmitted
+            } else
+#endif
             if (getChannel(ch_idx, ch) && sendGroupMessage(ts, ch.channel, _callsign, text, tlen)) {
                 _compWriteOK();
             } else {
@@ -1632,6 +1645,16 @@ private:
 
     void onChannelMessageRecv(const mesh::GroupChannel& channel, mesh::Packet* pkt,
                               uint32_t timestamp, const char* text) override {
+#if OPS_FEAT_BITCHAT
+        {
+            int slot = _slotOf(channel);
+            if (slot >= 0) {
+                uint8_t hash[MAX_HASH_SIZE];
+                pkt->calculatePacketHash(hash);
+                bitchat_bridge.onChannelText((uint8_t)slot, hash, text);
+            }
+        }
+#endif
         RxMessage msg{};
         msg.timestamp = timestamp;
         msg.rssi      = radio_driver.getLastRSSI();
@@ -2280,6 +2303,143 @@ public:
     }
 
     uint32_t lastExpectedAck() const { return _lastExpectedAck; }
+
+#if OPS_FEAT_BITCHAT
+    // ── Bitchat bridge host (bitchat::MeshHost) ────────────────────────
+    // Channel numbers are config slots (0 = Public), as in _channels[].
+    int _slotOf(const mesh::GroupChannel& channel) const
+    {
+        for (int i = 0; i < 10; i++) {
+            if (_channels[i] && memcmp(_channels[i]->channel.secret, channel.secret,
+                                       sizeof(channel.secret)) == 0) return i;
+        }
+        return -1;
+    }
+
+    uint32_t clockSeconds() override { return getRTCClock()->getCurrentTime(); }
+
+    uint32_t nodeNumber() override
+    {
+        return ((uint32_t)self_id.pub_key[0] << 24) | ((uint32_t)self_id.pub_key[1] << 16) |
+               ((uint32_t)self_id.pub_key[2] << 8) | self_id.pub_key[3];
+    }
+
+    const char* nodeName() override { return _callsign; }
+
+    uint8_t provideChannel(const char* name, const uint8_t secret[32]) override
+    {
+        for (int i = 0; i < 10; i++) {
+            if (_channels[i] && memcmp(_channels[i]->channel.secret, secret, 32) == 0) return (uint8_t)i;
+        }
+        // Only a name whose own "#name" key is the one asked for: the config then
+        // holds a name and no key material.
+        const char* base = (name[0] == '#' && name[1]) ? name + 1 : name;
+        char psk64[28] = {};
+        MeshService::deriveChannelPsk(base, psk64, sizeof(psk64));
+        uint8_t derived[32] = {};
+        if (_b64decode(psk64, derived, (int)sizeof(derived)) != 16 || memcmp(derived, secret, 32) != 0)
+            return bitchat::NO_CHANNEL;
+        const auto& cfg = config::get();
+        int slot = -1;
+        for (int i = 1; i < 10; i++) {
+            if (!cfg.channels[i].name[0]) { slot = i; break; }
+        }
+        if (slot < 0) return bitchat::NO_CHANNEL;
+        char shortname[6] = {};   // tab label
+        strncpy(shortname, strcmp(base, "bitchat") == 0 ? "bchat" : base, 5);
+        config::setChannel(slot, base, "", shortname, "");
+        syncChannelSlot(slot);
+        OPS_LOG("Bitchat", "Channel '%s' created in slot %d: %s", base, slot,
+                _channels[slot] ? "OK" : "FAILED");
+        return _channels[slot] ? (uint8_t)slot : bitchat::NO_CHANNEL;
+    }
+
+    bool readChannel(uint8_t index, char name[32], uint8_t secret[32]) override
+    {
+        if (index > 9 || !_channels[index] || !_channels[index]->name[0]) return false;
+        memcpy(name, _channels[index]->name, 32);
+        name[31] = '\0';
+        memcpy(secret, _channels[index]->channel.secret, 32);
+        return true;
+    }
+
+    uint32_t airtimeMs(size_t textSize) override
+    {
+        // header, transport codes, path length, channel hash and MAC, then the text in whole cipher blocks
+        return _radio->getEstAirtimeFor(
+            9 + ((5 + textSize + CIPHER_BLOCK_SIZE - 1) / CIPHER_BLOCK_SIZE) * CIPHER_BLOCK_SIZE);
+    }
+
+    bool radioBusy() override
+    {
+        return !_active || _mgr->getFreeCount() < 6 || _mgr->getOutboundTotal() >= 3;
+    }
+
+    // `text` is already "<sender>: <message>".
+    bool sendChannelText(uint8_t index, uint32_t timestamp, const char* text, size_t size) override
+    {
+        if (!_active || size == 0 || size > MAX_TEXT_LEN || index > 9 || !_channels[index]) return false;
+        uint8_t temp[5 + MAX_TEXT_LEN + 1];
+        memcpy(temp, &timestamp, 4);
+        temp[4] = TXT_TYPE_PLAIN;
+        memcpy(&temp[5], text, size);
+        temp[5 + size] = 0;
+        mesh::Packet* pkt = createGroupDatagram(PAYLOAD_TYPE_GRP_TXT, _channels[index]->channel, temp, 5 + size);
+        if (!pkt) return false;
+        sendFloodScoped(_channels[index]->channel, pkt);
+        showChannelText(index, timestamp, text, size);
+        return true;
+    }
+
+    // Shown in the chat on this device and in the phone app; nothing goes on the air.
+    void showChannelText(uint8_t index, uint32_t timestamp, const char* text, size_t size) override
+    {
+        if (index > 9 || !_channels[index] || size == 0) return;
+        char line[MAX_TEXT_LEN + 1];
+        size_t n = size > MAX_TEXT_LEN ? (size_t)MAX_TEXT_LEN : size;
+        memcpy(line, text, n);
+        line[n] = '\0';
+        if (timestamp == 0) timestamp = getRTCClock()->getCurrentTime();
+
+        RxMessage msg{};
+        msg.timestamp = timestamp;
+        const char* colon = strstr(line, ": ");
+        if (colon && (colon - line) < (int)sizeof(msg.senderName) - 1) {
+            int len = colon - line;
+            strncpy(msg.senderName, line, len);
+            msg.senderName[len] = '\0';
+            strncpy(msg.text, colon + 2, sizeof(msg.text) - 1);
+        } else {
+            strncpy(msg.senderName, "?", sizeof(msg.senderName) - 1);
+            strncpy(msg.text, line, sizeof(msg.text) - 1);
+        }
+        strncpy(msg.channelName, _channels[index]->name, sizeof(msg.channelName) - 1);
+        if (!_blankText(msg.text)) _enqueueRx(msg);
+
+        if (!_btSerial) return;
+        int chIdx = findChannelIdx(_channels[index]->channel);
+        int i = 0;
+        if (_appTargetVer >= 3) {
+            _outFrame[i++] = COMP_RESP_CHANNEL_MSG_RECV_V3;
+            _outFrame[i++] = 0;   // SNR: not heard on the air
+            _outFrame[i++] = 0; _outFrame[i++] = 0;
+        } else {
+            _outFrame[i++] = COMP_RESP_CHANNEL_MSG_RECV;
+        }
+        _outFrame[i++] = (uint8_t)(chIdx >= 0 ? chIdx : 0);
+        _outFrame[i++] = 0xFF;    // no path
+        _outFrame[i++] = 0;       // TXT_TYPE_PLAIN
+        memcpy(&_outFrame[i], &timestamp, 4); i += 4;
+        int tlen = (int)n;
+        if (i + tlen > MAX_FRAME_SIZE) tlen = MAX_FRAME_SIZE - i;
+        memcpy(&_outFrame[i], line, tlen); i += tlen;
+        _compAddToQueue(_outFrame, (uint8_t)i);
+        if (_btSerial->isConnected()) {
+            uint8_t tick = COMP_PUSH_MSG_WAITING;
+            _btSerial->writeFrame(&tick, 1);
+        }
+    }
+#endif  // OPS_FEAT_BITCHAT
 
     // ── BT Companion public interface ──────────────────────────────────
     void startCompanionInterface(BaseSerialInterface& serial)
@@ -3033,6 +3193,11 @@ public:
     }
 
     bool sendChannelMsg(int chIdx, const char* text) {
+#if OPS_FEAT_BITCHAT
+        // A bridge command (!bridge ...) is answered in the chat and never transmitted.
+        if (chIdx >= 0 && chIdx <= 9 && _channels[chIdx] &&
+            bitchat_bridge.onAppText((uint8_t)chIdx, text, strlen(text))) return true;
+#endif
         if (!_active) { OPS_LOG("Mesh", "TX blocked: radio inactive"); return false; }
         if (chIdx < 0 || chIdx > 9 || !_channels[chIdx]) {
             OPS_LOG("Mesh", "TX blocked: channel %d not registered", chIdx);
@@ -3716,6 +3881,9 @@ void MeshService::init() {
 
     _initialized = true;
     OPS_LOG("Mesh", "MeshCore ready");
+#if OPS_FEAT_BITCHAT
+    bitchat_bridge.begin(the_mesh);
+#endif
 }
 
 void MeshService::tick() {
@@ -3727,6 +3895,9 @@ void MeshService::tick() {
     the_mesh.serviceTelemetry();
     the_mesh.serviceOwnFloods();
     the_mesh.checkSerialInterface();
+#if OPS_FEAT_BITCHAT
+    bitchat_bridge.loop();
+#endif
     the_mesh.restoreDeferredPaths();   // no-op unless deferred at boot
     _tickFhss();
     _tickDutyCycle();
@@ -3995,6 +4166,11 @@ void MeshService::resetAllContactPaths() {
 }
 
 bool MeshService::lightSleep(uint32_t maxMs) {
+#if OPS_FEAT_BITCHAT
+    // The bridge serves phones over Bluetooth with the screen off; its links
+    // would not survive light sleep. With Bluetooth off the device sleeps as usual.
+    if (isBLERunning()) return false;
+#endif
     if (_initialized) {
         // Only sleep while quietly listening. Mid-TX, MeshCore waits for the
         // TX-done edge on DIO1 (which sleep would swallow); queued packets —
@@ -4194,6 +4370,15 @@ bool MeshService::isBLERunning() const
 bool MeshService::isBLEConnected() const
 {
     return ops::BTCompanionService::instance().isConnected();
+}
+
+const char* MeshService::bitchatStatus() const
+{
+#if OPS_FEAT_BITCHAT
+    return _initialized ? bitchat_bridge.status() : "radio off";
+#else
+    return "";
+#endif
 }
 
 bool MeshService::sendDiscoverReq(uint8_t typeFilter) {
