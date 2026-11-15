@@ -22,7 +22,9 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Avisos
 
-- O Saitama sai configurado para a faixa europeia: ajuste o rádio antes de transmitir.
+- **Rádio:** em instalação nova, sai na convenção da comunidade MeshCore Brasil (923,125 MHz,
+  62,5 kHz, SF 8, CR 4/8, _path hash_ de 2 bytes). Um aparelho com ajustes já salvos mantém os
+  dele; confira antes de transmitir.
 - O aplicativo _BT Foxhunt_ não faz parte destas versões.
 - Com o Bluetooth ligado o aparelho não repousa, e a bateria dura menos.
 - Um telefone já pareado com o Saitama original precisa parear de novo.

@@ -30,9 +30,11 @@ Os ambientes `t-deck` e `cardputer-adv`, sem a ponte, continuam como no Saitama 
 
 ## Primeiro uso
 
-1. **Rádio.** O Saitama sai configurado para a faixa europeia (869,618 MHz). Antes de transmitir,
-   ajuste em _Settings_ a frequência e os demais parâmetros para os mesmos da sua rede; não há perfil
-   pronto para o Brasil, mas há valores personalizados.
+1. **Rádio.** Em instalação nova, estas versões já saem na convenção da comunidade MeshCore
+   Brasil: 923,125 MHz, largura de 62,5 kHz, SF 8, CR 4/8 e _path hash_ de 2 bytes, gravados como
+   valores personalizados (_Settings_ > _Radio Mode_ mostra _Custom_). Um aparelho que já tinha
+   ajustes salvos, na memória ou no cartão SD, mantém os dele: confira antes de transmitir. Para
+   falar com outros rádios, os quatro valores precisam ser iguais aos deles.
 2. **Bluetooth.** Em instalação nova ele já vem ligado nesta versão. Se os ajustes forem
    restaurados do cartão SD com o Bluetooth desligado, ligue-o em _Settings_.
 3. **Canal.** A ponte cria sozinha o canal `bitchat` (aba `bchat`) na primeira partida, se houver
@@ -80,7 +82,10 @@ MeshCore 1.18.0 com os arquivos da ponte. As fontes do MeshCore em si são as me
 e) **Estas versões são compiladas em C++17**, exigido pela ponte, e usam a biblioteca
 `NimBLE-Arduino` 1.4.3.
 
-f) A ponte guarda 16 mensagens recentes entre reinícios, em vez de 64, para ocupar menos da área de
+f) **Rádio de fábrica no padrão brasileiro** (item 1 do primeiro uso), em vez do europeu. A
+potência não muda (22 dBm). O cumprimento das regras da Anatel é do usuário.
+
+g) A ponte guarda 16 mensagens recentes entre reinícios, em vez de 64, para ocupar menos da área de
 ajustes do aparelho.
 
 ## O que não se sabe

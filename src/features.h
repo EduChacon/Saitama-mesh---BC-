@@ -131,6 +131,14 @@
 #define OPS_FEAT_BITCHAT 1
 #undef  OPS_FEAT_FOXHUNT
 #define OPS_FEAT_FOXHUNT 0
+// Factory radio settings of those builds: the convention of the MeshCore Brasil
+// community (923.125 MHz, 62.5 kHz, SF8, CR 4/8, 2-byte path hashes), stored as
+// custom radio values. They apply to a device with no saved settings.
+#define OPS_FACTORY_FREQ_MHZ  923.125f
+#define OPS_FACTORY_SF        8
+#define OPS_FACTORY_BW        1    // 62.5 kHz
+#define OPS_FACTORY_CR        8
+#define OPS_FACTORY_PATH_HASH 2
 #else
 #define OPS_FEAT_BITCHAT 0
 #endif

@@ -56,16 +56,28 @@ static void setDefaults(Config& c) {
     c.theme            = 0;
     c.radioProfile     = 2;   // EU/UK Narrow (index into applyLoraProfile())
     c.showAdverts      = false;
+#ifdef OPS_FACTORY_FREQ_MHZ
+    c.radioCustom      = true;
+    c.freqMHz          = OPS_FACTORY_FREQ_MHZ;
+    c.radioSF          = OPS_FACTORY_SF;
+    c.radioBW          = OPS_FACTORY_BW;
+    c.radioCR          = OPS_FACTORY_CR;
+#else
     c.radioCustom      = false;
     c.freqMHz          = 0.0f;
     c.radioSF          = 0;
     c.radioBW          = 0;
     c.radioCR          = 0;
+#endif
     c.radioTX          = 0;
     c.manualLat        = 0.0f;
     c.manualLon        = 0.0f;
     c.autoForward      = true;
+#ifdef OPS_FACTORY_PATH_HASH
+    c.pathHashSz       = OPS_FACTORY_PATH_HASH;
+#else
     c.pathHashSz       = 0;
+#endif
     c.timezoneOffsetHours = 0;
     c.scopeTag[0]      = '\0';
     c.loraDutyCycle    = false;
@@ -236,16 +248,16 @@ static bool _loadFromSD() {
     s_cfg.theme             = doc["theme"]        | s_cfg.theme;
     s_cfg.radioProfile      = doc["radioProf"]    | s_cfg.radioProfile;
     s_cfg.showAdverts       = doc["showAdverts"]  | s_cfg.showAdverts;
-    s_cfg.radioCustom       = doc["radioCustom"]  | false;
-    s_cfg.freqMHz           = doc["freqMHz"]      | 0.0f;
-    s_cfg.radioSF           = doc["radioSF"]      | (uint8_t)0;
-    s_cfg.radioBW           = doc["radioBW"]      | (uint8_t)0;
-    s_cfg.radioCR           = doc["radioCR"]      | (uint8_t)0;
+    s_cfg.radioCustom       = doc["radioCustom"]  | s_cfg.radioCustom;
+    s_cfg.freqMHz           = doc["freqMHz"]      | s_cfg.freqMHz;
+    s_cfg.radioSF           = doc["radioSF"]      | s_cfg.radioSF;
+    s_cfg.radioBW           = doc["radioBW"]      | s_cfg.radioBW;
+    s_cfg.radioCR           = doc["radioCR"]      | s_cfg.radioCR;
     s_cfg.radioTX           = doc["radioTX"]      | (int8_t)0;
     s_cfg.manualLat         = doc["manualLat"]    | 0.0f;
     s_cfg.manualLon         = doc["manualLon"]    | 0.0f;
     s_cfg.autoForward       = doc["autoFwd"]      | true;
-    s_cfg.pathHashSz        = doc["pathHashSz"]   | (uint8_t)0;
+    s_cfg.pathHashSz        = doc["pathHashSz"]   | s_cfg.pathHashSz;
     if (s_cfg.pathHashSz > 3) s_cfg.pathHashSz = 0;
     s_cfg.timezoneOffsetHours = (int8_t)(doc["tzOff"] | 0);
     strncpy(s_cfg.scopeTag, doc["scopeTag"] | "", sizeof(s_cfg.scopeTag) - 1);
@@ -472,16 +484,16 @@ void config::init() {
         s_cfg.theme             = prefs.getInt("theme",         s_cfg.theme);
         s_cfg.radioProfile      = prefs.getUChar("radioProf",   s_cfg.radioProfile);
         s_cfg.showAdverts       = prefs.getBool("showAdverts",  s_cfg.showAdverts);
-        s_cfg.radioCustom       = prefs.getBool("radioCustom",  false);
-        s_cfg.freqMHz           = prefs.getFloat("freqMHz",     0.0f);
-        s_cfg.radioSF           = prefs.getUChar("radioSF",     0);
-        s_cfg.radioBW           = prefs.getUChar("radioBW",     0);
-        s_cfg.radioCR           = prefs.getUChar("radioCR",     0);
+        s_cfg.radioCustom       = prefs.getBool("radioCustom",  s_cfg.radioCustom);
+        s_cfg.freqMHz           = prefs.getFloat("freqMHz",     s_cfg.freqMHz);
+        s_cfg.radioSF           = prefs.getUChar("radioSF",     s_cfg.radioSF);
+        s_cfg.radioBW           = prefs.getUChar("radioBW",     s_cfg.radioBW);
+        s_cfg.radioCR           = prefs.getUChar("radioCR",     s_cfg.radioCR);
         s_cfg.radioTX           = (int8_t)prefs.getChar("radioTX", 0);
         s_cfg.manualLat         = prefs.getFloat("manualLat",   0.0f);
         s_cfg.manualLon         = prefs.getFloat("manualLon",   0.0f);
         s_cfg.autoForward       = prefs.getBool("autoFwd",      true);
-        s_cfg.pathHashSz        = prefs.getUChar("pathHashSz",  0);
+        s_cfg.pathHashSz        = prefs.getUChar("pathHashSz",  s_cfg.pathHashSz);
         s_cfg.timezoneOffsetHours = (int8_t)prefs.getChar("tzOff", 0);
         s_cfg.kbAutoNight       = prefs.getBool("kbAutoNight", false);
         {
