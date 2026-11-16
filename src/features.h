@@ -55,9 +55,16 @@
 #define OPS_SD_MOSI  14
 #define OPS_SD_BUS_TFT_CS -1  // display is on its own bus
 
+// A build short of memory (the Bitchat bridge here) can set lower limits on the command line.
+#ifndef OPS_CONTACTS_CAPACITY
 #define OPS_CONTACTS_CAPACITY  100
+#endif
+#ifndef OPS_REPEATERS_CAPACITY
 #define OPS_REPEATERS_CAPACITY 60
+#endif
+#ifndef OPS_CHAT_HISTORY
 #define OPS_CHAT_HISTORY       60    // messages held in RAM across all chats
+#endif
 #define OPS_CHAT_PER_CONV      10    // messages kept (and shown) per channel/DM
 #define OPS_CHAT_LITE          1     // 3-object bubbles, chat freed when hidden
 

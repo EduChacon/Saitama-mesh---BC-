@@ -10,6 +10,15 @@ público do aplicativo Bitchat para um canal do MeshCore e de volta.
 funcionou em um Heltec V3 com o MeshCore original (versão `bitchat0.1`). A ligação dela ao Saitama,
 descrita aqui, não foi ensaiada.
 
+> **Cardputer ADV: não use a versão com ponte por enquanto.** Ensaiada em aparelho em 2026-11-16, a
+> `saitama-cardputer-adv-bitchat` fica com cerca de 4 KB de memória livre: os ajustes travam ao abrir,
+> e a ponte não consegue iniciar (o canal `bitchat` não aparece). O Cardputer não tem memória extra
+> (PSRAM), e o Bluetooth ligado, que a ponte exige, já deixa o Saitama no limite. Para destravar sem
+> regravar: no cartão SD, em `/ops/settings.json`, trocar `"bluetooth": true` por `"bluetooth": false`.
+> Para ter a ponte no Cardputer, use o firmware MeshCore com ponte
+> ([`M5Stack_Cardputer_ADV_companion_radio_ble_bitchat`](https://github.com/EduChacon/Meshcore-Bitchat/releases)).
+> A versão do T-Deck Plus não é afetada.
+
 ## Arquivos
 
 | Aparelho                                | Ambiente                | Arquivo                                        |
