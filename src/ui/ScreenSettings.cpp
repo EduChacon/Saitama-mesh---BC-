@@ -467,6 +467,17 @@ void ScreenSettings::_buildList(lv_obj_t* parent) {
         snprintf(pinStr, sizeof(pinStr), "%06lu", (unsigned long)ops::btpin::get());
         _addRow(_list, LV_SYMBOL_BLUETOOTH, "Bluetooth PIN", pinStr, 41);
     }
+#if OPS_FEAT_BITCHAT
+    {
+        // The Bitchat bridge: its mode, and the economy mode (slower Bluetooth with no phone near).
+        ops::MeshService& mesh = ops::MeshService::instance();
+        const char* mode = mesh.bitchatMode();
+        _addRow(_list, LV_SYMBOL_SHUFFLE, "Bitchat", mode, 49,
+                strcmp(mode, "Off") == 0 ? ROW_OFF : ROW_ON);
+        _addRow(_list, LV_SYMBOL_BATTERY_2, "Bitchat saver", mesh.bitchatSaving() ? on : off, 50,
+                mesh.bitchatSaving() ? ROW_ON : ROW_OFF);
+    }
+#endif
 #if OPS_FEAT_SOUND
     {
         char spkStr[16];
@@ -5726,6 +5737,23 @@ void ScreenSettings::_onItemClick(lv_event_t* e) {
             _openScreenOffDialog();
             return;
 
+#if OPS_FEAT_BITCHAT
+        case 49: {  // Bitchat → Off / Bitchat + LoRa / Bitchat only, kept by the bridge
+            ops::MeshService& mesh = ops::MeshService::instance();
+            mesh.bitchatNextMode();
+            const char* mode = mesh.bitchatMode();
+            _setRowValue(lv_event_get_current_target(e), mode, strcmp(mode, "Off") == 0 ? ROW_OFF : ROW_ON);
+            return;
+        }
+        case 50: {  // Bitchat saver → the bridge's economy mode, kept by the bridge
+            ops::MeshService& mesh = ops::MeshService::instance();
+            mesh.bitchatSetSaving(!mesh.bitchatSaving());
+            const bool saving = mesh.bitchatSaving();
+            _setRowValue(lv_event_get_current_target(e), lang::tr(saving ? lang::TR_ON : lang::TR_OFF),
+                         saving ? ROW_ON : ROW_OFF);
+            return;
+        }
+#endif
         case 47:  // Serial Output → toggle logs + terminal echo on USB serial
             cfg.serialLog = !cfg.serialLog;
             ops::log::g_serialOn = true;   // so the change itself is logged

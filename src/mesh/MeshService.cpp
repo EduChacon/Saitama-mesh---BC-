@@ -4381,6 +4381,43 @@ const char* MeshService::bitchatStatus() const
 #endif
 }
 
+const char* MeshService::bitchatMode() const
+{
+#if OPS_FEAT_BITCHAT
+    return _initialized ? bitchat_bridge.modeName() : "--";
+#else
+    return "";
+#endif
+}
+
+bool MeshService::bitchatNextMode()
+{
+#if OPS_FEAT_BITCHAT
+    return _initialized && bitchat_bridge.nextMode();
+#else
+    return false;
+#endif
+}
+
+bool MeshService::bitchatSaving() const
+{
+#if OPS_FEAT_BITCHAT
+    return _initialized && bitchat_bridge.saving();
+#else
+    return false;
+#endif
+}
+
+bool MeshService::bitchatSetSaving(bool on)
+{
+#if OPS_FEAT_BITCHAT
+    return _initialized && bitchat_bridge.setSaving(on);
+#else
+    (void)on;
+    return false;
+#endif
+}
+
 bool MeshService::sendDiscoverReq(uint8_t typeFilter) {
     return _initialized && the_mesh.sendDiscoverReqMsg(typeFilter);
 }

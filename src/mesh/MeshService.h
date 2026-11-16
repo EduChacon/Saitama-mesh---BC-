@@ -380,6 +380,11 @@ public:
     bool isBLEConnected() const;
     // One line on the Bitchat bridge ("" in builds without it).
     const char* bitchatStatus() const;
+    // Bridge settings for the Settings screen; no-ops in builds without the bridge.
+    const char* bitchatMode() const;      // "Off", "Bitchat + LoRa" or "Bitchat only"
+    bool bitchatNextMode();               // Off -> Bitchat + LoRa -> Bitchat only -> Off
+    bool bitchatSaving() const;           // economy mode chosen
+    bool bitchatSetSaving(bool on);
 
     bool initialized() const { return _initialized; }
     // True when the SX1262 BUSY pin (GPIO13) is HIGH — TX or command in progress.
