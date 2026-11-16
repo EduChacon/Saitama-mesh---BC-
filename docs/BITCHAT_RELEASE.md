@@ -40,6 +40,7 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
   localização estiver ligado; `!ponte radios` só responde no aparelho; o recado só é trocado por um
   telefone ligado diretamente; as respostas da ponte não vão ao cartão SD; uma identidade nova do
   aparelho renova a da ponte; a biblioteca de mapas passa a ser compilada numa versão fixa.
+  Ensaio no GitHub e compilação local das duas placas aprovados antes da publicação.
 
 ## Da versão anterior
 
