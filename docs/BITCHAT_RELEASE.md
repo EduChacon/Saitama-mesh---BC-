@@ -35,6 +35,12 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+- **`!bridge position on`** (ponte MeshCore `bitchat0.13`), enviado no aparelho: o socorro pedido
+  pelo Bitchat passa a levar a posição do GPS, sem ligar o compartilhamento de localização. Pensado
+  para trilha. `!bridge position off` desliga; vem desligado.
+
+## Versão anterior
+
 - **Correções de segurança e de privacidade** (ponte MeshCore `bitchat0.12`), a partir de uma
   revisão do código: o socorro pedido pelo Bitchat só leva a posição se o compartilhamento de
   localização estiver ligado; `!ponte radios` só responde no aparelho; o recado só é trocado por um

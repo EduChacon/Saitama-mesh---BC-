@@ -85,7 +85,8 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   `!ponte radios` (contatos com atividade nas últimas 24 h; só no aparelho, porque inclui com quem
   o dono troca mensagens privadas), `!ponte sos <texto>` (pedido de socorro ao LoRa; digitado no
   aparelho, leva a posição do GPS, quando houver; pedido pelo Bitchat, só se a opção de compartilhar
-  a localização estiver ligada; a posição vai para todos os que têm o canal) e
+  a localização estiver ligada ou se `!bridge position on` tiver sido enviado no aparelho, próprio
+  para trilha; a posição vai para todos os que têm o canal) e
   `!ponte teste` (teste de alcance com as outras pontes). Descrição completa no
   [guia da ponte MeshCore](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/README.md#funções-da-casa-a-partir-da-bitchat011).
   A bateria é lida direto no divisor de tensão, como faz o próprio aparelho. No T-Deck Plus o GPS
