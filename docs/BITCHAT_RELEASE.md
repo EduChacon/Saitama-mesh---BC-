@@ -38,7 +38,8 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 - **Funções da casa** (ponte MeshCore `bitchat0.11`), por comando no aparelho ou no `#mesh` do
   Bitchat: `!bridge prefix on`/`off`, `!ponte recado <texto>`, `!ponte bateria` (com aviso de
   bateria baixa), `!ponte radios`, `!ponte sos <texto>` (com a posição do GPS, se houver) e
-  `!ponte teste`. Só simuladas e compiladas.
+  `!ponte teste`. Só simuladas e compiladas; o código passou por duas revisões independentes, e
+  as falhas achadas foram corrigidas antes da publicação.
 
 ## Da versão anterior
 
