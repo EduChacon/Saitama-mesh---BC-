@@ -1651,9 +1651,12 @@ private:
             if (slot >= 0) {
                 uint8_t hash[MAX_HASH_SIZE];
                 pkt->calculatePacketHash(hash);
+                // the signal is of the last hop: for a relayed packet it says nothing about the sender
                 const float snr = pkt->getSNR();
-                bitchat_bridge.onChannelText((uint8_t)slot, hash, text,
-                                             (int16_t)(snr * 10.0f + (snr < 0 ? -0.5f : 0.5f)));
+                const int16_t snrTenths = pkt->getPathHashCount() > 0
+                                              ? bitchat::SNR_UNKNOWN
+                                              : (int16_t)(snr * 10.0f + (snr < 0 ? -0.5f : 0.5f));
+                bitchat_bridge.onChannelText((uint8_t)slot, hash, text, snrTenths);
             }
         }
 #endif
