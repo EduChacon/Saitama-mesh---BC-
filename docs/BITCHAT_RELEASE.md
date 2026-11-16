@@ -35,8 +35,9 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
-- **`!ponte quem`** (ou `!bridge who`): lista os nomes ouvidos no canal LoRa nas últimas seis horas,
-  no próprio aparelho, no aplicativo MeshCore ou no `#mesh` do Bitchat.
-- Das versões anteriores: histórico para quem chega depois (o texto do LoRa fica guardado, até 12
-  mensagens por seis horas, e é entregue ao telefone que chega) e `!ponte guia`, que explica a
-  ponte em quatro mensagens curtas.
+- **Menu de ajustes:** linhas **Bitchat** (modo da ponte) e **Bitchat saver** (modo econômico),
+  sem precisar dos comandos.
+- **Histórico, segunda parte:** a ponte guarda também o que os telefones escrevem no `#mesh` perto
+  do aparelho, para quem chega depois (só aparece para quem já conheceu o autor).
+- Das versões anteriores: `!ponte quem` (nomes ouvidos no LoRa), histórico do texto do LoRa e
+  `!ponte guia`.

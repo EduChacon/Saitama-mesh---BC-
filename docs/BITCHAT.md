@@ -65,9 +65,14 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   Meshtastic.
 - `!bridge economy on`, `!bridge economy off`: liga e desliga o modo econômico da ponte, que vem
   desligado; a escolha fica gravada.
-- **Histórico para quem chega depois:** o texto que vem do LoRa é guardado mesmo sem telefone
-  conectado (as últimas 12 mensagens, por até seis horas, só na memória). O telefone que chega
-  recebe o que falta, no trecho "ouvido aqui antes" do Bitchat. `!bridge` mostra `Kept N`.
+- **Histórico para quem chega depois:** o texto que vem do LoRa, e também o que os telefones
+  escrevem no `#mesh` perto do aparelho, é guardado mesmo sem telefone conectado (as últimas 12
+  mensagens, por até seis horas, só na memória). O telefone que chega recebe o que falta, no
+  trecho "ouvido aqui antes" do Bitchat; mensagens de outros telefones só aparecem para quem já
+  conheceu o autor. `!bridge` mostra `Kept N`.
+- **No menu de ajustes:** a linha **Bitchat** alterna entre `Off`, `Bitchat + LoRa` e `Bitchat
+  only`; a linha **Bitchat saver** liga e desliga o modo econômico. A ponte guarda as duas
+  escolhas.
 - `!ponte quem` (ou `!bridge who`, em inglês): lista os nomes ouvidos no canal LoRa nas últimas
   seis horas. Vale também no `#mesh` do Bitchat, cujo `/who` só mostra a malha Bluetooth.
 - `!ponte guia` (ou `!bridge guide`, em inglês): explica a ponte em quatro mensagens curtas. Vale
