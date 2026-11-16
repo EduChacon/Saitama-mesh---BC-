@@ -1651,7 +1651,9 @@ private:
             if (slot >= 0) {
                 uint8_t hash[MAX_HASH_SIZE];
                 pkt->calculatePacketHash(hash);
-                bitchat_bridge.onChannelText((uint8_t)slot, hash, text);
+                const float snr = pkt->getSNR();
+                bitchat_bridge.onChannelText((uint8_t)slot, hash, text,
+                                             (int16_t)(snr * 10.0f + (snr < 0 ? -0.5f : 0.5f)));
             }
         }
 #endif
@@ -2389,6 +2391,55 @@ public:
         sendFloodScoped(_channels[index]->channel, pkt);
         showChannelText(index, timestamp, text, size);
         return true;
+    }
+
+    // The battery as the bridge reports it: VBAT is read through a /2 divider, as Board does.
+    uint16_t batteryMilliVolts() override
+    {
+        uint32_t sum = 0;
+        for (int i = 0; i < 8; i++) sum += analogReadMilliVolts(OPS_BATT_ADC_PIN);
+        return (uint16_t)(sum / 8 * 2);
+    }
+
+    // The contacts heard most recently, by this radio's clock; the route length when one is known.
+    size_t heardRadios(HeardRadio* out, size_t capacity) override
+    {
+        const uint32_t now = getRTCClock()->getCurrentTime();
+        size_t count = 0;
+        ContactInfo c;
+        ContactsIterator contacts = startContactsIterator();
+        while (capacity && contacts.hasNext(this, c)) {
+            if (c.lastmod == 0 || c.lastmod > now) continue;
+            const uint32_t ago = now - c.lastmod;
+            size_t slot = count;
+            if (count == capacity) {
+                // full: the one heard longest ago gives way
+                slot = 0;
+                for (size_t j = 1; j < count; j++) {
+                    if (out[j].secondsAgo > out[slot].secondsAgo) slot = j;
+                }
+                if (out[slot].secondsAgo <= ago) continue;
+            } else {
+                count++;
+            }
+            strncpy(out[slot].name, c.name, sizeof(out[slot].name) - 1);
+            out[slot].name[sizeof(out[slot].name) - 1] = '\0';
+            out[slot].hops = c.out_path_len == OUT_PATH_UNKNOWN ? -1 : (int8_t)(c.out_path_len & 63);
+            out[slot].secondsAgo = ago;
+            out[slot].snrTenths = bitchat::SNR_UNKNOWN;
+        }
+        return count;
+    }
+
+    // The GPS position, when there is a fix. The T-Deck Plus keeps its GPS on and sets the clock from it,
+    // so the bridge needs nothing else for the time.
+    bool position(int32_t& latitude, int32_t& longitude) override
+    {
+        auto& board = Board::instance();
+        if (!board.hasGPSFix()) return false;
+        latitude  = (int32_t)(board.gpsLat() * 1000000.0f);
+        longitude = (int32_t)(board.gpsLng() * 1000000.0f);
+        return latitude != 0 || longitude != 0;
     }
 
     // Shown in the chat on this device and in the phone app; nothing goes on the air.
