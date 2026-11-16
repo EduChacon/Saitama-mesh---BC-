@@ -2434,6 +2434,9 @@ public:
         return count;
     }
 
+    // A help request asked from Bitchat carries the position only when the owner shares it on the mesh.
+    bool positionShared() override { return ops::config::get().locationSharing; }
+
     // The GPS position, when there is a fix. The T-Deck Plus keeps its GPS on and sets the clock from it,
     // so the bridge needs nothing else for the time.
     bool position(int32_t& latitude, int32_t& longitude) override
@@ -2912,6 +2915,10 @@ public:
             store.save("self", self_id, _callsign);
         }
         _saveIdentityBackups();
+#if OPS_FEAT_BITCHAT
+        // a new node identity gets a new bridge identity too, so the two are not linked
+        bitchat_bridge.renewIdentity();
+#endif
         OPS_LOG("Mesh", "Identity regenerated");
     }
 
@@ -3556,6 +3563,9 @@ public:
             store.save("self", self_id, _callsign);
         }
         _saveIdentityBackups();
+#if OPS_FEAT_BITCHAT
+        bitchat_bridge.renewIdentity();
+#endif
         return true;
     }
 

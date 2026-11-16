@@ -82,12 +82,19 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   `!bridge prefix on`/`off` (só o texto iniciado por `!lora` vai ao LoRa; só no aparelho),
   `!ponte recado <texto>` (recado entregue uma vez a cada 12 h a cada telefone que chega; qualquer
   pessoa perto do aparelho pode trocá-lo), `!ponte bateria` (e aviso de bateria baixa no `#mesh`),
-  `!ponte radios` (contatos ouvidos nas últimas 24 h), `!ponte sos <texto>` (pedido de socorro ao
-  LoRa com a posição do GPS, quando houver; a posição vai para todos os que têm o canal) e
+  `!ponte radios` (contatos com atividade nas últimas 24 h; só no aparelho, porque inclui com quem
+  o dono troca mensagens privadas), `!ponte sos <texto>` (pedido de socorro ao LoRa; digitado no
+  aparelho, leva a posição do GPS, quando houver; pedido pelo Bitchat, só se a opção de compartilhar
+  a localização estiver ligada; a posição vai para todos os que têm o canal) e
   `!ponte teste` (teste de alcance com as outras pontes). Descrição completa no
   [guia da ponte MeshCore](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/README.md#funções-da-casa-a-partir-da-bitchat011).
   A bateria é lida direto no divisor de tensão, como faz o próprio aparelho. No T-Deck Plus o GPS
-  já fica ligado e acerta o relógio; a ponte não mexe nele.
+  já fica ligado e acerta o relógio; a ponte não mexe nele. As respostas da ponte (remetente
+  `bridge`) não são gravadas no cartão SD, mesmo com o histórico de mensagens ligado. Ao gerar uma
+  identidade nova para o aparelho, a ponte também passa a ter identidade nova. O recado só é trocado
+  por um telefone ligado diretamente ao aparelho.
+- **Ensaio em aparelho:** o [roteiro](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/TESTING.md)
+  combinado antes da versão 1.0 vale também para o T-Deck Plus e o Cardputer ADV.
 
 ## O que muda em relação ao Saitama original
 

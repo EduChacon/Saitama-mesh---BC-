@@ -375,6 +375,10 @@ bool ScreenHome::_historyAdd(bool           sent,
 
     if (s_loadingFromSD) {
         // replaying from SD — skip write
+#if OPS_FEAT_BITCHAT
+    } else if (!sent && sender && strcmp(sender, "bridge") == 0) {
+        // The Bitchat bridge's own answers (state, names, radios) stay in RAM, as its docs say.
+#endif
     } else if (!ops::config::get().saveMsgs) {
         OPS_LOG("Chat", "saveMsgs off — not saving '%s'", e.channelTag);
     } else if (!ops::sdcard::isMounted()) {
