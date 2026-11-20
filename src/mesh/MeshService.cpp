@@ -1371,6 +1371,7 @@ private:
 #if OPS_FEAT_BITCHAT
         // A Bitchat phone may be talking with this contact through the bridge (MeshCore-Bitchat 0.24); the chat
         // here still shows the message. Never for a blocked contact.
+        // Only favourites go further: the bridge asks favouriteContact().
         if (!ops::contacts::isBlockedKey(from.id.pub_key))
             bitchat_bridge.onDirectText(from.id.pub_key, from.name, text, strlen(text));
 #endif
@@ -2411,7 +2412,7 @@ public:
         ContactInfo c;
         ContactsIterator contacts = startContactsIterator();
         while (contacts.hasNext(this, c)) {
-            if (c.type != ADV_TYPE_CHAT || ops::contacts::isBlockedKey(c.id.pub_key)) continue;
+            if (c.type != ADV_TYPE_CHAT || !_bitchatFavourite(c.id.pub_key)) continue;
             const size_t n = strnlen(c.name, sizeof(c.name));
             if (!n || size <= n || (text[n] != ' ' && text[n] != ':') || n < best) continue;
             bool same = true;
@@ -2428,7 +2429,21 @@ public:
         return best > 0;
     }
 
-    bool sendDirectText(const uint8_t id[8], const char* text, size_t size) override
+    // Only the favourites of this device's contact list, never a blocked one, talk with Bitchat phones.
+    static bool _bitchatFavourite(const uint8_t* key)
+    {
+        int idx = -1;
+        ops::Contact c{};
+        return ops::contacts::findByKey(key, &idx) && ops::contacts::get(idx, c) && c.favourite && !c.blocked;
+    }
+
+    bool favouriteContact(const uint8_t id[8]) override
+    {
+        ContactInfo* contact = lookupContactByPubKey(id, 8);
+        return contact && contact->type == ADV_TYPE_CHAT && _bitchatFavourite(id);
+    }
+
+    bool sendDirectText(const uint8_t id[8], uint32_t timestamp, const char* text, size_t size) override
     {
         ContactInfo* contact = lookupContactByPubKey(id, 8);
         if (!_active || !contact || size == 0 || size > MAX_TEXT_LEN) return false;
@@ -2437,7 +2452,6 @@ public:
         line[size] = '\0';
         // As BaseChatMesh::composeMsgPacket (private there) builds a first attempt: time, attempt 0, text.
         uint8_t temp[5 + MAX_TEXT_LEN + 1];
-        const uint32_t timestamp = getRTCClock()->getCurrentTimeUnique();
         memcpy(temp, &timestamp, 4);
         temp[4] = 0;
         memcpy(&temp[5], line, size + 1);
