@@ -111,6 +111,20 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   [CASHU.md](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/CASHU.md). No
   T-Deck Plus, os buffers da ponte ficam na PSRAM, e a RAM interna fica para o Bluetooth, o AES dos
   canais e o cartão SD.
+- **Conversas privadas** (ponte `bitchat0.24`): no Bitchat, a ponte aparece na lista de pessoas como
+  `LoRa bridge` e quatro caracteres. Na conversa privada com ela, basta a palavra (`bateria`,
+  `quem`, `guia`, `teste`, `recado <texto>`, `sos <texto>`, `ponte`), e a resposta sai só ali.
+  `@Fulano texto` manda uma mensagem direta do MeshCore ao contato Fulano, **só se ele tiver a
+  estrela de favorito na tela _Contacts_** e não estiver bloqueado; a resposta aparece no chat do
+  aparelho e volta ao celular em até 30 minutos, ou a qualquer hora quando começa com `@apelido`. A
+  ponte lê essas mensagens. `!bridge dm off` (ou `!ponte privado off`) desliga. Com
+  `!bridge tunnel on` (ou `!ponte túnel on`) nas pontes de duas casas, os celulares de uma conversam
+  no privado com os da outra, de ponta a ponta, pelo canal LoRa; vem desligado, porque gasta tempo
+  do canal. Detalhes no
+  [guia da ponte MeshCore](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/README.md).
+- **Hora pelos anúncios do LoRa** (ponte `bitchat0.24`): sem telefone ou GPS com hora, a ponte acerta
+  a sua pelo maior grupo de rádios MeshCore ao alcance que concordam entre si (pelo menos dois). O
+  relógio do aparelho não é alterado.
 - **Ensaio em aparelho:** o [roteiro](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/TESTING.md)
   combinado antes da versão 1.0 vale também para o T-Deck Plus e o Cardputer ADV.
 

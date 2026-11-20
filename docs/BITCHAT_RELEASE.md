@@ -44,6 +44,31 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+Ponte MeshCore `bitchat0.24`, pensada para ficar meses sem troca. **Nada do que é novo foi ligado
+em aparelho;** passou nos testes em computador e compila para as duas placas.
+
+- **Conversa privada com a ponte.** No Bitchat, a ponte aparece na lista de pessoas como
+  `LoRa bridge` e quatro caracteres; abre-se com ela uma conversa privada como com qualquer pessoa.
+  Ali basta a palavra (`bateria`, `quem`, `guia`, `teste`, `recado <texto>`, `sos <texto>`, ou
+  `ponte` para o estado), e a resposta sai só nessa conversa. A criptografia é a mesma das conversas
+  entre telefones (Noise).
+- **Mensagem a um contato do LoRa.** Na conversa privada com a ponte, `@Fulano texto` vai ao contato
+  Fulano do aparelho como mensagem direta do MeshCore, com o apelido de quem escreveu, **só se
+  Fulano tiver a estrela de favorito na tela _Contacts_ do Saitama** (e não estiver bloqueado). A
+  resposta dele aparece no chat do aparelho, como sempre, e volta à mesma conversa do Bitchat em até
+  30 minutos, ou a qualquer hora quando começa com `@apelido`. Se o celular estiver longe, a resposta
+  espera até 24 horas. A ponte lê essas mensagens (não é ponta a ponta). `!bridge dm off` (ou
+  `!ponte privado off`) desliga.
+- **Conversa privada entre celulares de casas diferentes**, de ponta a ponta, pelo LoRa: com
+  `!bridge tunnel on` (ou `!ponte túnel on`) nas pontes das duas casas, cada celular vê no Bitchat
+  quem está perto da outra ponte e conversa com ele no privado. As pontes só carregam os pacotes
+  criptografados. Vem desligado, porque gasta tempo do canal compartilhado.
+- **Hora pelos anúncios do LoRa.** Sem telefone ou GPS com hora, a ponte acerta a sua pelo maior
+  grupo de rádios MeshCore ao alcance que concordam entre si (pelo menos dois). O relógio do
+  aparelho não é alterado.
+
+## Versão anterior
+
 - **Pagamentos Cashu pelo LoRa** (ponte MeshCore `bitchat0.23`, que reúne as `bitchat0.20` a
   `0.23`): um token Cashu colado no chat público do Bitchat perto do aparelho vai pelo LoRa, em
   pedaços, até outra ponte, que o entrega aos telefones Bitchat perto dela. O token chega inteiro ou
@@ -59,15 +84,12 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 - **Só compilado e testado no computador; os pagamentos não foram ensaiados em aparelho.** Ensaio no
   GitHub e compilação local das duas placas aprovados antes da publicação.
 
-## Versão anterior
+## Versões anteriores
 
 - **`!bridge position on`** (ponte MeshCore `bitchat0.13`), enviado no aparelho: o socorro pedido
   pelo Bitchat passa a levar a posição do GPS, sem ligar o compartilhamento de localização. Pensado
   para trilha. `!bridge position off` desliga; vem desligado. Ensaio no GitHub e compilação local
   das duas placas aprovados antes da publicação.
-
-## Versões anteriores
-
 - **Correções de segurança e de privacidade** (ponte MeshCore `bitchat0.12`), a partir de uma
   revisão do código: o socorro pedido pelo Bitchat só leva a posição se o compartilhamento de
   localização estiver ligado; `!ponte radios` só responde no aparelho; o recado só é trocado por um
