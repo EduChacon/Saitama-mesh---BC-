@@ -2396,6 +2396,15 @@ public:
         return true;
     }
 
+    // Adverts carry their radio's time: the bridge may take it when nothing else gave the time
+    // (MeshCore-Bitchat 0.24). Then the usual handling.
+    void onAdvertRecv(mesh::Packet* packet, const mesh::Identity& id, uint32_t timestamp, const uint8_t* app_data,
+                      size_t app_data_len) override
+    {
+        bitchat_bridge.onRadioTime(id.pub_key, timestamp);
+        BaseChatMesh::onAdvertRecv(packet, id, timestamp, app_data, app_data_len);
+    }
+
     // ── Cashu payments between bridges (MeshCore-Bitchat 0.14+) ───────
     // The parts of a payment and their confirmations travel as channel data on the bridge's channel.
     void onChannelDataRecv(const mesh::GroupChannel& channel, mesh::Packet* /*pkt*/, uint16_t data_type,
