@@ -56,7 +56,8 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
   ficar calada.
 - **T-Deck Plus:** os buffers da ponte passam para a PSRAM; a RAM interna fica para o Bluetooth, o
   AES dos canais e o cartão SD.
-- **Só compilado e testado no computador; os pagamentos não foram ensaiados em aparelho.**
+- **Só compilado e testado no computador; os pagamentos não foram ensaiados em aparelho.** Ensaio no
+  GitHub e compilação local das duas placas aprovados antes da publicação.
 
 ## Versão anterior
 
