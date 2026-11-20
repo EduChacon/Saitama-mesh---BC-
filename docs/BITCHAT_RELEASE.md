@@ -44,6 +44,19 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+Ponte MeshCore `bitchat0.25`: correções do primeiro ensaio em aparelho das conversas privadas.
+
+- **Resposta abaixo da pergunta.** Na conversa privada com a ponte, cada resposta aparecia acima da
+  pergunta, porque o relógio da ponte pode ficar até um segundo atrás do celular e o Bitchat ordena a
+  conversa pelo horário. A resposta agora sai com horário posterior ao da pergunta.
+- **Configurações só pelo dono.** `túnel on` escrito no Bitchat devolvia o estado da ponte. As
+  configurações nunca mudam pelo Bitchat; a ponte agora diz isso. A mensagem cita o aplicativo
+  MeshCore; no Saitama, os comandos `!bridge` são digitados no próprio aparelho, em qualquer canal.
+- As demais correções da `bitchat0.25` são dos rádios nRF52 e não se aplicam ao T-Deck nem ao
+  Cardputer. **Não foi ligado em aparelho.**
+
+## Versão anterior
+
 Ponte MeshCore `bitchat0.24`, pensada para ficar meses sem troca. **Nada do que é novo foi ligado
 em aparelho;** passou nos testes em computador e compila para as duas placas.
 
@@ -67,7 +80,7 @@ em aparelho;** passou nos testes em computador e compila para as duas placas.
   grupo de rádios MeshCore ao alcance que concordam entre si (pelo menos dois). O relógio do
   aparelho não é alterado.
 
-## Versão anterior
+## Versões anteriores
 
 - **Pagamentos Cashu pelo LoRa** (ponte MeshCore `bitchat0.23`, que reúne as `bitchat0.20` a
   `0.23`): um token Cashu colado no chat público do Bitchat perto do aparelho vai pelo LoRa, em
@@ -83,8 +96,6 @@ em aparelho;** passou nos testes em computador e compila para as duas placas.
   AES dos canais e o cartão SD.
 - **Só compilado e testado no computador; os pagamentos não foram ensaiados em aparelho.** Ensaio no
   GitHub e compilação local das duas placas aprovados antes da publicação.
-
-## Versões anteriores
 
 - **`!bridge position on`** (ponte MeshCore `bitchat0.13`), enviado no aparelho: o socorro pedido
   pelo Bitchat passa a levar a posição do GPS, sem ligar o compartilhamento de localização. Pensado

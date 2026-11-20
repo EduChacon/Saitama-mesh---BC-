@@ -8,7 +8,7 @@
 
 // Builds with the Bitchat bridge say so beside the version on the device.
 #ifdef WITH_BITCHAT_BRIDGE
-#define OPS_VERSION_SUFFIX " +Bitchat 13"
+#define OPS_VERSION_SUFFIX " +Bitchat 14"
 #else
 #define OPS_VERSION_SUFFIX ""
 #endif
