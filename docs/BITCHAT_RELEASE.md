@@ -44,12 +44,28 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+- **Pagamentos Cashu pelo LoRa** (ponte MeshCore `bitchat0.23`, que reúne as `bitchat0.20` a
+  `0.23`): um token Cashu colado no chat público do Bitchat perto do aparelho vai pelo LoRa, em
+  pedaços, até outra ponte, que o entrega aos telefones Bitchat perto dela. O token chega inteiro ou
+  não chega: nenhum pedaço avulso vai ao Bitchat nem ao chat do aparelho, e quem pagou recebe no
+  `#mesh` a confirmação assinada pelo rádio de destino (ou o aviso de que o token continua com ele).
+  Guia e roteiro de ensaio no
+  [CASHU.md](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/CASHU.md).
+- **Nenhum pedaço de token do LoRa chega ao Bitchat** como texto comum.
+- **Bluetooth reiniciado:** se a pilha do Bluetooth recomeçar, a ponte recomeça com ela, em vez de
+  ficar calada.
+- **T-Deck Plus:** os buffers da ponte passam para a PSRAM; a RAM interna fica para o Bluetooth, o
+  AES dos canais e o cartão SD.
+- **Só compilado e testado no computador; os pagamentos não foram ensaiados em aparelho.**
+
+## Versão anterior
+
 - **`!bridge position on`** (ponte MeshCore `bitchat0.13`), enviado no aparelho: o socorro pedido
   pelo Bitchat passa a levar a posição do GPS, sem ligar o compartilhamento de localização. Pensado
   para trilha. `!bridge position off` desliga; vem desligado. Ensaio no GitHub e compilação local
   das duas placas aprovados antes da publicação.
 
-## Versão anterior
+## Versões anteriores
 
 - **Correções de segurança e de privacidade** (ponte MeshCore `bitchat0.12`), a partir de uma
   revisão do código: o socorro pedido pelo Bitchat só leva a posição se o compartilhamento de
@@ -57,17 +73,11 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
   telefone ligado diretamente; as respostas da ponte não vão ao cartão SD; uma identidade nova do
   aparelho renova a da ponte; a biblioteca de mapas passa a ser compilada numa versão fixa.
   Ensaio no GitHub e compilação local das duas placas aprovados antes da publicação.
-
-## Da versão anterior
-
 - **Funções da casa** (ponte MeshCore `bitchat0.11`), por comando no aparelho ou no `#mesh` do
   Bitchat: `!bridge prefix on`/`off`, `!ponte recado <texto>`, `!ponte bateria` (com aviso de
   bateria baixa), `!ponte radios`, `!ponte sos <texto>` (com a posição do GPS, se houver) e
   `!ponte teste`. Só simuladas e compiladas; o código passou por duas revisões independentes, e
   as falhas achadas foram corrigidas antes da publicação.
-
-## Versões anteriores
-
 - **Menu de ajustes:** linhas **Bitchat** (modo da ponte) e **Bitchat saver** (modo econômico),
   sem precisar dos comandos.
 - **Histórico, segunda parte:** a ponte guarda também o que os telefones escrevem no `#mesh` perto

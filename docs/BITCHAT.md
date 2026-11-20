@@ -21,10 +21,10 @@ descrita aqui, não foi ensaiada.
 
 ## Arquivos
 
-| Aparelho                                | Ambiente                | Arquivo                                        |
-| --------------------------------------- | ----------------------- | ---------------------------------------------- |
-| LilyGo T-Deck e T-Deck Plus             | `t-deck-bitchat`        | `saitama-t-deck-plus-bitchat-<versão>`         |
-| M5Stack Cardputer ADV com Cap LoRa-1262 | `cardputer-adv-bitchat` | `saitama-cardputer-adv-bitchat-<versão>`       |
+| Aparelho                                | Ambiente                | Arquivo                                  |
+| --------------------------------------- | ----------------------- | ---------------------------------------- |
+| LilyGo T-Deck e T-Deck Plus             | `t-deck-bitchat`        | `saitama-t-deck-plus-bitchat-<versão>`   |
+| M5Stack Cardputer ADV com Cap LoRa-1262 | `cardputer-adv-bitchat` | `saitama-cardputer-adv-bitchat-<versão>` |
 
 Cada um tem duas formas:
 
@@ -79,9 +79,9 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   mensagens, por até seis horas, só na memória). O telefone que chega recebe o que falta, no
   trecho "ouvido aqui antes" do Bitchat; mensagens de outros telefones só aparecem para quem já
   conheceu o autor. `!bridge` mostra `Kept N`.
-- **No menu de ajustes:** a linha **Bitchat** alterna entre `Off`, `Bitchat + LoRa` e `Bitchat
-  only`; a linha **Bitchat saver** liga e desliga o modo econômico. A ponte guarda as duas
-  escolhas.
+- **No menu de ajustes:** a linha **Bitchat** alterna entre `Off`, `Bitchat + LoRa` e
+  `Bitchat only`; a linha **Bitchat saver** liga e desliga o modo econômico. A ponte guarda as
+  duas escolhas.
 - `!ponte quem` (ou `!bridge who`, em inglês): lista os nomes ouvidos no canal LoRa nas últimas
   seis horas. Vale também no `#mesh` do Bitchat, cujo `/who` só mostra a malha Bluetooth.
 - `!ponte guia` (ou `!bridge guide`, em inglês): explica a ponte em quatro mensagens curtas. Vale
@@ -103,6 +103,14 @@ Saitama original precisa esquecer o aparelho e parear de novo.
   `bridge`) não são gravadas no cartão SD, mesmo com o histórico de mensagens ligado. Ao gerar uma
   identidade nova para o aparelho, a ponte também passa a ter identidade nova. O recado só é trocado
   por um telefone ligado diretamente ao aparelho.
+- **Pagamentos Cashu pelo LoRa** (ponte `bitchat0.20` em diante): um token Cashu colado no chat
+  público do Bitchat perto de uma ponte é levado pelo LoRa, em pedaços, até outra ponte, que o
+  entrega aos telefones Bitchat perto dela. Ou chega inteiro, ou não chega: nenhum pedaço avulso vai
+  ao Bitchat nem ao chat do aparelho, e quem pagou recebe a confirmação assinada pelo rádio de
+  destino. Guia e roteiro de ensaio no
+  [CASHU.md](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/CASHU.md). No
+  T-Deck Plus, os buffers da ponte ficam na PSRAM, e a RAM interna fica para o Bluetooth, o AES dos
+  canais e o cartão SD.
 - **Ensaio em aparelho:** o [roteiro](https://github.com/EduChacon/Meshcore-Bitchat/blob/main/docs/bitchat/TESTING.md)
   combinado antes da versão 1.0 vale também para o T-Deck Plus e o Cardputer ADV.
 

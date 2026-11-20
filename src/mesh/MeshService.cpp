@@ -2396,6 +2396,46 @@ public:
         return true;
     }
 
+    // ── Cashu payments between bridges (MeshCore-Bitchat 0.14+) ───────
+    // The parts of a payment and their confirmations travel as channel data on the bridge's channel.
+    void onChannelDataRecv(const mesh::GroupChannel& channel, mesh::Packet* /*pkt*/, uint16_t data_type,
+                           const uint8_t* data, size_t data_len) override
+    {
+        const int slot = _slotOf(channel);
+        if (slot >= 0) bitchat_bridge.onChannelData((uint8_t)slot, data_type, data, data_len);
+    }
+
+    bool sendChannelData(uint8_t index, uint16_t dataType, const uint8_t* data, size_t size) override
+    {
+        if (!_active || size == 0 || size > MAX_GROUP_DATA_LENGTH || index > 9 || !_channels[index]) return false;
+        return sendGroupData(_channels[index]->channel, NULL, OUT_PATH_UNKNOWN, dataType, data, (int)size);
+    }
+
+    // The confirmation of a payment is signed with this radio's identity, which its adverts carry.
+    bool nodeKeyPrefix(uint8_t keyPrefix[8]) override
+    {
+        memcpy(keyPrefix, self_id.pub_key, 8);
+        return true;
+    }
+
+    bool signAsNode(const uint8_t* data, size_t size, uint8_t signature[64]) override
+    {
+        self_id.sign(signature, data, (int)size);
+        return true;
+    }
+
+    // A radio heard in an advert is a contact with its whole public key: that key checks the signature.
+    NodeCheck verifyNode(const uint8_t keyPrefix[8], const uint8_t* data, size_t size,
+                         const uint8_t signature[64], char name[32]) override
+    {
+        ContactInfo* contact = lookupContactByPubKey(keyPrefix, 8);
+        if (!contact) return NodeCheck::Unknown;
+        if (!contact->id.verify(signature, data, (int)size)) return NodeCheck::Invalid;
+        strncpy(name, contact->name, 31);
+        name[31] = '\0';
+        return NodeCheck::Valid;
+    }
+
     // The battery as the bridge reports it: VBAT is read through a /2 divider, as Board does.
     uint16_t batteryMilliVolts() override
     {
