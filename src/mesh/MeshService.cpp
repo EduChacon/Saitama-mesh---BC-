@@ -1368,6 +1368,12 @@ private:
                 from.name, text, msg.hops, (double)msg.rssi, (double)msg.snr);
         _enqueueRx(msg);
         _compQueueContactMsg(from, pkt, sender_timestamp, text);
+#if OPS_FEAT_BITCHAT
+        // A Bitchat phone may be talking with this contact through the bridge (MeshCore-Bitchat 0.24); the chat
+        // here still shows the message. Never for a blocked contact.
+        if (!ops::contacts::isBlockedKey(from.id.pub_key))
+            bitchat_bridge.onDirectText(from.id.pub_key, from.name, text, strlen(text));
+#endif
     }
 
     // A repeater/room server's reply to an admin CLI command (TXT_TYPE_CLI_DATA).
@@ -2395,6 +2401,55 @@ public:
         showChannelText(index, timestamp, text, size);
         return true;
     }
+
+    // Direct messages for the bridge's private chat (MeshCore-Bitchat 0.24): "@Name text" from a Bitchat phone
+    // goes to the chat contact of that name. Blocked contacts are left out.
+    bool findContact(const char* text, size_t size, LoraContact& out, size_t& consumed, bool& ambiguous) override
+    {
+        ambiguous = false;
+        size_t best = 0;
+        ContactInfo c;
+        ContactsIterator contacts = startContactsIterator();
+        while (contacts.hasNext(this, c)) {
+            if (c.type != ADV_TYPE_CHAT || ops::contacts::isBlockedKey(c.id.pub_key)) continue;
+            const size_t n = strnlen(c.name, sizeof(c.name));
+            if (!n || size <= n || (text[n] != ' ' && text[n] != ':') || n < best) continue;
+            bool same = true;
+            for (size_t i = 0; i < n && same; i++)
+                same = tolower((unsigned char)text[i]) == tolower((unsigned char)c.name[i]);
+            if (!same) continue;
+            ambiguous = n == best;
+            best = n;
+            memcpy(out.id, c.id.pub_key, sizeof(out.id));
+            strncpy(out.name, c.name, sizeof(out.name) - 1);
+            out.name[sizeof(out.name) - 1] = '\0';
+        }
+        consumed = best;
+        return best > 0;
+    }
+
+    bool sendDirectText(const uint8_t id[8], const char* text, size_t size) override
+    {
+        ContactInfo* contact = lookupContactByPubKey(id, 8);
+        if (!_active || !contact || size == 0 || size > MAX_TEXT_LEN) return false;
+        char line[MAX_TEXT_LEN + 1];
+        memcpy(line, text, size);
+        line[size] = '\0';
+        // As BaseChatMesh::composeMsgPacket (private there) builds a first attempt: time, attempt 0, text.
+        uint8_t temp[5 + MAX_TEXT_LEN + 1];
+        const uint32_t timestamp = getRTCClock()->getCurrentTimeUnique();
+        memcpy(temp, &timestamp, 4);
+        temp[4] = 0;
+        memcpy(&temp[5], line, size + 1);
+        mesh::Packet* pkt =
+            createDatagram(PAYLOAD_TYPE_TXT_MSG, contact->id, contact->getSharedSecret(self_id), temp, 5 + size);
+        if (!pkt) return false;
+        if (contact->out_path_len == OUT_PATH_UNKNOWN) sendFloodScoped(*contact, pkt);
+        else sendDirect(pkt, contact->out_path, contact->out_path_len);
+        return true;
+    }
+
+    size_t directTextLimit() override { return MAX_TEXT_LEN; }
 
     // Adverts carry their radio's time: the bridge may take it when nothing else gave the time
     // (MeshCore-Bitchat 0.24). Then the usual handling.
