@@ -137,6 +137,8 @@ enum RadioPowerMode : uint8_t {
 namespace config {
     void init();
     void save();
+    // True on the first start of a device with nothing stored: the radio settings are the factory ones.
+    bool factoryStart();
     // Reload from /ops/settings.json and resave to NVS. Returns 1 on success, -1 on failure.
     int  reloadFromSD();
     // Rewrites /ops/settings.json if it still holds plaintext channel PSKs

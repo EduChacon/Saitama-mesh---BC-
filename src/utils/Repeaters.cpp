@@ -22,10 +22,17 @@ static int       s_count = 0;
 // missing at boot, mounted later) save() merges into the card's file instead
 // of overwriting the saved archive with this session's entries.
 static bool     s_sdChecked = false;
+// The SD list holds more entries than this build keeps (a build with smaller tables, such as the Cardputer's
+// bridge build): the file is left as it is, never rewritten without the entries that did not fit.
+static bool     s_sdTruncated = false;
 
 // ── SD JSON helpers ────────────────────────────────────────────────
 
 static void _saveToSD() {
+    if (s_sdTruncated) {
+        OPS_LOG("SD", "repeaters.json kept: it holds more than the %d this build keeps", (int)repeaters::CAPACITY);
+        return;
+    }
     if (!sdcard::isMounted()) return;
     JsonDocument doc(psramJson());   // PSRAM: a full list is tens of KB
     JsonArray arr = doc["repeaters"].to<JsonArray>();
@@ -109,8 +116,12 @@ static bool _loadFromSD() {
 
     JsonArray arr = doc["repeaters"].as<JsonArray>();
     s_count = 0;
+    s_sdTruncated = false;
     for (JsonObject obj : arr) {
-        if (s_count >= repeaters::CAPACITY) break;
+        if (s_count >= repeaters::CAPACITY) {
+            s_sdTruncated = true;
+            break;
+        }
         Repeater& r = s_reps[s_count];
         strncpy(r.name, obj["name"] | "", sizeof(r.name) - 1);
         r.name[sizeof(r.name) - 1] = '\0';

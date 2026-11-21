@@ -4059,7 +4059,10 @@ void MeshService::init() {
     OPS_LOG("Mesh", "Radio: %.3f MHz SF%d BW%.1f CR4/%d",
             (double)sx1262.freqMHz, (int)sx1262.spreadingFactor,
             (double)sx1262.bandwidthKhz, (int)sx1262.codingRate + 4);
-    the_mesh.sendSelfAdvert(random(500, 2500), false);  // zero-hop on boot
+    // Zero-hop on boot, except on the very first start: the factory frequency (Brazil for the Bitchat builds) may
+    // not be the one allowed where the device is, and the user has not had the chance to check it yet.
+    if (!config::factoryStart())
+        the_mesh.sendSelfAdvert(random(500, 2500), false);
 
     _initialized = true;
     OPS_LOG("Mesh", "MeshCore ready");

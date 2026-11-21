@@ -368,6 +368,9 @@ static bool _sanitize(Config& c) {
     return fixed;
 }
 
+// Nothing was stored before this start (a first flash): the radio is on the factory settings, not yet checked.
+static bool s_factoryStart = false;
+
 void config::init() {
     setDefaults(s_cfg);
 
@@ -534,9 +537,15 @@ void config::init() {
     prefs.end();
 
     // ── Factory defaults ────────────────────────────────────────────────
-    if (!_loadFromSD())
+    if (!_loadFromSD()) {
         OPS_LOG("Config", "No saved config, using defaults");
+        s_factoryStart = true;
+    }
     save();
+}
+
+bool config::factoryStart() {
+    return s_factoryStart;
 }
 
 void config::scrubSdSecrets() {

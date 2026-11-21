@@ -22,10 +22,17 @@ static int      s_count = 0;
 // missing at boot, mounted later) save() merges into the card's file instead
 // of overwriting the saved archive with this session's entries.
 static bool     s_sdChecked = false;
+// The SD list holds more entries than this build keeps (a build with smaller tables, such as the Cardputer's
+// bridge build): the file is left as it is, never rewritten without the entries that did not fit.
+static bool     s_sdTruncated = false;
 
 // ── SD JSON helpers ────────────────────────────────────────────────
 
 static void _saveToSD() {
+    if (s_sdTruncated) {
+        OPS_LOG("SD", "contacts.json kept: it holds more than the %d this build keeps", (int)contacts::CAPACITY);
+        return;
+    }
     if (!sdcard::isMounted()) return;
     JsonDocument doc(psramJson());   // PSRAM: a full list is tens of KB
     JsonArray arr = doc["contacts"].to<JsonArray>();
@@ -113,8 +120,12 @@ static bool _loadFromSD() {
 
     JsonArray arr = doc["contacts"].as<JsonArray>();
     s_count = 0;
+    s_sdTruncated = false;
     for (JsonObject obj : arr) {
-        if (s_count >= contacts::CAPACITY) break;
+        if (s_count >= contacts::CAPACITY) {
+            s_sdTruncated = true;
+            break;
+        }
         Contact& c = s_contacts[s_count];
         memset(&c, 0, sizeof(Contact));
         strncpy(c.name, obj["name"] | "", sizeof(c.name) - 1);

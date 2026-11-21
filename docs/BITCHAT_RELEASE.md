@@ -1,7 +1,8 @@
 # Saitama + Bitchat
 
 Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitchat embutida.
-**Versão experimental: compila para as duas placas e nunca foi ligada em aparelho.**
+**Versão experimental:** compila para as duas placas; o único ensaio em aparelho registrado aqui é o
+do Cardputer ADV, logo abaixo.
 
 > **Cardputer ADV: não use a versão com ponte por enquanto.** Ensaiada em aparelho em 2026-11-16, a
 > `saitama-cardputer-adv-bitchat` fica com cerca de 4 KB de memória livre: os ajustes travam ao abrir,
@@ -33,7 +34,8 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 - **Rádio:** em instalação nova, sai na convenção da comunidade MeshCore Brasil (923,125 MHz,
   62,5 kHz, SF 8, CR 4/8, _path hash_ de 2 bytes). Um aparelho com ajustes já salvos mantém os
-  dele; confira antes de transmitir.
+  dele; confira antes de transmitir. Na primeira partida de um aparelho sem nada gravado, o Saitama
+  não se anuncia sozinho pelo rádio, para dar tempo de conferir.
 - O aplicativo _BT Foxhunt_ não faz parte destas versões.
 - Com o Bluetooth ligado o aparelho não repousa, e a bateria dura menos.
 - **O modo econômico da ponte passou a ser opcional e vem desligado** (`!bridge economy on` liga,
@@ -51,8 +53,19 @@ Ponte MeshCore `bitchat1.2`.
   celular perto das duas pontes, a própria ponte manda agora a presença a cada 40 segundos (um
   celular por ponte na configuração de rádio brasileira), e a conversa privada abre sem esperar
   minutos.
-- **Custo:** cerca de 5% do tempo do canal por celular nesse ritmo (estimativa); a presença só sai
-  quando sobra folga no limite de rádio da ponte.
+  Quem está numa conversa pelo túnel vai primeiro nesse ritmo.
+- **Custo:** cerca de 5% a 8% do tempo do canal por celular nesse ritmo (estimativa, maior com canal
+  movimentado); a presença só sai quando sobra folga no limite de rádio da ponte.
+- **Segurança (revisão geral):**
+  - quem pareia pelo Bluetooth sem o PIN não recebe mais os dados do aplicativo MeshCore (canais e
+    suas chaves, contatos, mensagens) nem toma o lugar dele;
+  - a hora da ponte: um aparelho só, perto do rádio, não a leva mais para longe da hora dos celulares,
+    e um celular corrige a hora vinda dos anúncios do LoRa nos dois sentidos;
+  - uma "ponte" falsa no Bluetooth segura o texto público por um minuto no máximo;
+  - o celular verdadeiro retoma o próprio lugar quando outro aparelho usa a identidade dele;
+  - pagamentos vindos do LoRa não enchem mais a lista de celulares da ponte.
+- **Cardputer ADV:** se o cartão SD guardar mais contatos ou repetidores do que a versão com ponte
+  comporta (60 e 30), a lista do cartão não é mais regravada pela metade.
 - **Não foi ligado no T-Deck nem no Cardputer.**
 
 ## Versão anterior
