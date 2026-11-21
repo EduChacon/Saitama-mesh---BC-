@@ -44,6 +44,20 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+Ponte MeshCore `bitchat1.0`, a versão revisada por inteiro. **As mudanças não foram ligadas no
+T-Deck nem no Cardputer;** a ponte foi ensaiada pelo autor num Heltec V3 e num T1000-E.
+
+- **Túnel ligado de fábrica:** conversa privada entre celulares perto de pontes diferentes, pelo
+  LoRa. Com ele, o apelido de quem está perto do aparelho vai pelo LoRa; `!bridge tunnel off` (ou
+  `!ponte túnel off`) desliga.
+- **Túnel com a ponte em reserva:** quando duas pontes se ouvem pelo Bluetooth, a reserva para o
+  texto público não para mais o túnel (visto em aparelho, com a ponte MeshCore).
+- **Ajuda nas duas línguas:** `!ponte ajuda` ou `!bridge help` no aparelho; `ajuda` ou `help` na
+  conversa privada com a ponte, no Bitchat.
+- **Hora por um rádio só,** quando a ponte não tem nenhuma.
+
+## Versão anterior
+
 Ponte MeshCore `bitchat0.25`: correções do primeiro ensaio em aparelho das conversas privadas.
 
 - **Resposta abaixo da pergunta.** Na conversa privada com a ponte, cada resposta aparecia acima da
@@ -55,7 +69,7 @@ Ponte MeshCore `bitchat0.25`: correções do primeiro ensaio em aparelho das con
 - As demais correções da `bitchat0.25` são dos rádios nRF52 e não se aplicam ao T-Deck nem ao
   Cardputer. **Não foi ligado em aparelho.**
 
-## Versão anterior
+## Versões anteriores
 
 Ponte MeshCore `bitchat0.24`, pensada para ficar meses sem troca. **Nada do que é novo foi ligado
 em aparelho;** passou nos testes em computador e compila para as duas placas.
@@ -79,8 +93,6 @@ em aparelho;** passou nos testes em computador e compila para as duas placas.
 - **Hora pelos anúncios do LoRa.** Sem telefone ou GPS com hora, a ponte acerta a sua pelo maior
   grupo de rádios MeshCore ao alcance que concordam entre si (pelo menos dois). O relógio do
   aparelho não é alterado.
-
-## Versões anteriores
 
 - **Pagamentos Cashu pelo LoRa** (ponte MeshCore `bitchat0.23`, que reúne as `bitchat0.20` a
   `0.23`): um token Cashu colado no chat público do Bitchat perto do aparelho vai pelo LoRa, em
