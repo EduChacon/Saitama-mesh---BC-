@@ -100,5 +100,5 @@ jobs:
           bridge=$(python3 -c "import re; print(re.search(r'\+Bitchat (\d+)', open('src/version.h').read()).group(1))")
           tag="bitchat-${version}-${bridge}"
           (cd published && sha256sum * > SHA256SUMS)
-          gh release create "$tag" published/* --target "$GITHUB_SHA" --prerelease \
+          gh release create "$tag" published/* --target "$GITHUB_SHA" --latest \
             --title "Saitama ${version} + Bitchat ${bridge}" --notes-file docs/BITCHAT_RELEASE.md
