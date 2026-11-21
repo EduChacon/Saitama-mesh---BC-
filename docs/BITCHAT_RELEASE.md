@@ -44,6 +44,20 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+Ponte MeshCore `bitchat1.1`. É a primeira versão do Saitama com ponte publicada como versão normal,
+e não como pré-lançamento.
+
+- **Túnel: a conversa abre mais depressa.** O Bitchat do iPhone desiste de abrir uma conversa
+  privada em cerca de 10 segundos, e pelo túnel a abertura vai e volta pelo LoRa. Agora os pedaços
+  da abertura saem assim que o rádio fica livre.
+- **Contadores do túnel:** `!bridge` mostra `Tunnel: out N, in M, far phones K`.
+- **Configurações pelo Bitchat:** um comando de configuração escrito no `#mesh` recebe o aviso de
+  que só o dono do rádio muda isso.
+- O túnel foi ensaiado pelo autor com a ponte MeshCore (Heltec V3 e T1000-E); **no T-Deck e no
+  Cardputer, não foi ligado.**
+
+## Versão anterior
+
 Ponte MeshCore `bitchat1.0`, a versão revisada por inteiro. **As mudanças não foram ligadas no
 T-Deck nem no Cardputer;** a ponte foi ensaiada pelo autor num Heltec V3 e num T1000-E.
 
@@ -56,7 +70,7 @@ T-Deck nem no Cardputer;** a ponte foi ensaiada pelo autor num Heltec V3 e num T
   conversa privada com a ponte, no Bitchat.
 - **Hora por um rádio só,** quando a ponte não tem nenhuma.
 
-## Versão anterior
+## Versões anteriores
 
 Ponte MeshCore `bitchat0.25`: correções do primeiro ensaio em aparelho das conversas privadas.
 
@@ -68,8 +82,6 @@ Ponte MeshCore `bitchat0.25`: correções do primeiro ensaio em aparelho das con
   MeshCore; no Saitama, os comandos `!bridge` são digitados no próprio aparelho, em qualquer canal.
 - As demais correções da `bitchat0.25` são dos rádios nRF52 e não se aplicam ao T-Deck nem ao
   Cardputer. **Não foi ligado em aparelho.**
-
-## Versões anteriores
 
 Ponte MeshCore `bitchat0.24`, pensada para ficar meses sem troca. **Nada do que é novo foi ligado
 em aparelho;** passou nos testes em computador e compila para as duas placas.
