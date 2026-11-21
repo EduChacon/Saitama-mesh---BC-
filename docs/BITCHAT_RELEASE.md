@@ -35,7 +35,8 @@ do Cardputer ADV, logo abaixo.
 - **Rádio:** em instalação nova, sai na convenção da comunidade MeshCore Brasil (923,125 MHz,
   62,5 kHz, SF 8, CR 4/8, _path hash_ de 2 bytes). Um aparelho com ajustes já salvos mantém os
   dele; confira antes de transmitir. Na primeira partida de um aparelho sem nada gravado, o Saitama
-  não se anuncia sozinho pelo rádio, para dar tempo de conferir.
+  não manda o anúncio de partida, para dar tempo de conferir (o anúncio automático periódico, se
+  ligado, e a ponte continuam).
 - O aplicativo _BT Foxhunt_ não faz parte destas versões.
 - Com o Bluetooth ligado o aparelho não repousa, e a bateria dura menos.
 - **O modo econômico da ponte passou a ser opcional e vem desligado** (`!bridge economy on` liga,
@@ -59,13 +60,15 @@ Ponte MeshCore `bitchat1.2`.
 - **Segurança (revisão geral):**
   - quem pareia pelo Bluetooth sem o PIN não recebe mais os dados do aplicativo MeshCore (canais e
     suas chaves, contatos, mensagens) nem toma o lugar dele;
-  - a hora da ponte: um aparelho só, perto do rádio, não a leva mais para longe da hora dos celulares,
-    e um celular corrige a hora vinda dos anúncios do LoRa nos dois sentidos;
+  - a hora da ponte: vale um voto por conexão Bluetooth, e uma conexão só não a leva mais para longe
+    da hora dos celulares; um celular corrige a hora vinda dos anúncios do LoRa nos dois sentidos;
   - uma "ponte" falsa no Bluetooth segura o texto público por um minuto no máximo;
-  - o celular verdadeiro retoma o próprio lugar quando outro aparelho usa a identidade dele;
+  - outro aparelho não toma mais a identidade de um celular presente; se a tomou antes de ele chegar,
+    perde-a 3 minutos depois de parar de se anunciar;
   - pagamentos vindos do LoRa não enchem mais a lista de celulares da ponte.
 - **Cardputer ADV:** se o cartão SD guardar mais contatos ou repetidores do que a versão com ponte
-  comporta (60 e 30), a lista do cartão não é mais regravada pela metade.
+  comporta (60 e 30), a lista do cartão não é mais regravada pela metade; nesse caso, as mudanças
+  feitas na lista valem só até desligar.
 - **Não foi ligado no T-Deck nem no Cardputer.**
 
 ## Versão anterior

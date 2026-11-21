@@ -23,7 +23,8 @@ static int       s_count = 0;
 // of overwriting the saved archive with this session's entries.
 static bool     s_sdChecked = false;
 // The SD list holds more entries than this build keeps (a build with smaller tables, such as the Cardputer's
-// bridge build): the file is left as it is, never rewritten without the entries that did not fit.
+// bridge build): the file is left as it is, never rewritten without the entries that did not fit. Changes made
+// in this session are then kept in memory only, until the next start.
 static bool     s_sdTruncated = false;
 
 // ── SD JSON helpers ────────────────────────────────────────────────
@@ -277,6 +278,9 @@ void repeaters::init()
 int repeaters::reloadFromSD()
 {
     if (!sdcard::isMounted()) return -1;
+    // The card holds more than this build keeps and is not rewritten: reading it again would undo this
+    // session's changes (they stay until the next start).
+    if (s_sdTruncated) return s_count;
     int snapN = s_count;
 #if !OPS_HAS_PSRAM
     // No PSRAM: borrow the rollback copy only for the reload.
