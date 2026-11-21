@@ -44,6 +44,18 @@ Saitama (sistema para T-Deck e Cardputer ADV sobre o MeshCore) com a ponte Bitch
 
 ## Novidade desta versão
 
+Ponte MeshCore `bitchat1.2`.
+
+- **Túnel: a pessoa do outro lado fica na lista do Bitchat.** O Bitchat tira da lista, 60 segundos
+  depois, quem chega retransmitido, e não manda mensagem privada a quem não está nela. Enquanto houver
+  celular perto das duas pontes, a presença vai agora a cada 50 segundos (para os dois primeiros
+  celulares de cada ponte), e a conversa privada abre sem esperar minutos.
+- **Custo:** cerca de 5% do tempo do canal por celular nesse ritmo (estimativa); a presença só sai
+  quando sobra folga no limite de rádio da ponte.
+- **Não foi ligado no T-Deck nem no Cardputer.**
+
+## Versão anterior
+
 Ponte MeshCore `bitchat1.1`. É a primeira versão do Saitama com ponte publicada como versão normal,
 e não como pré-lançamento.
 
@@ -56,7 +68,7 @@ e não como pré-lançamento.
 - O túnel foi ensaiado pelo autor com a ponte MeshCore (Heltec V3 e T1000-E); **no T-Deck e no
   Cardputer, não foi ligado.**
 
-## Versão anterior
+## Versões anteriores
 
 Ponte MeshCore `bitchat1.0`, a versão revisada por inteiro. **As mudanças não foram ligadas no
 T-Deck nem no Cardputer;** a ponte foi ensaiada pelo autor num Heltec V3 e num T1000-E.
@@ -69,8 +81,6 @@ T-Deck nem no Cardputer;** a ponte foi ensaiada pelo autor num Heltec V3 e num T
 - **Ajuda nas duas línguas:** `!ponte ajuda` ou `!bridge help` no aparelho; `ajuda` ou `help` na
   conversa privada com a ponte, no Bitchat.
 - **Hora por um rádio só,** quando a ponte não tem nenhuma.
-
-## Versões anteriores
 
 Ponte MeshCore `bitchat0.25`: correções do primeiro ensaio em aparelho das conversas privadas.
 
